@@ -1,0 +1,6 @@
+.venv
+.idea
+app_logs.log
+assets/db
+__pycache__/
+

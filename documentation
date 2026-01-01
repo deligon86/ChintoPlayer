@@ -1,0 +1,5 @@
+* The loading of modules is slow when running on kivy interface
+
+# Next steps
+* Replace kivymd 1.2.0 with latest 2.0.0
+* Implement views ( song, album, playlist, settings) mvps
