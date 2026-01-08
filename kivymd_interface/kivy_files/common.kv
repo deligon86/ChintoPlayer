@@ -1,2 +1,26 @@
 <CommonLabel>:
     shorten_from: 'right'
+
+<SongTrackItem>:
+    size_hint_y: None
+    height: '48dp'
+    radius: 0
+    padding: '5dp'
+    MDBoxLayout:
+        # title, artist, duration
+        CommonLabel:
+            text: root.title
+            shorten: True
+        MDLabel:
+            text: root.artist
+            size_hint_x: .6
+            shorten: True
+        CommonLabel:
+            text: root.duration_formated
+            size_hint_x: .2
+            shorten: True
+    MDBoxLayout:
+        adaptive_width: True
+        MDIconButton:
+            icon: 'dots-vertical'
+            pos_hint: {'center_x': .5, 'center_y': .5}

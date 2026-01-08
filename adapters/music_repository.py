@@ -111,13 +111,84 @@ class MusicRepository:
             cursor = conn.execute(query, track_ids)
             return [self._map_row_to_track(row) for row in cursor.fetchall()]
 
+    def get_albums(self) -> List[Dict]:
+        """
+        Retrieves a list of albums with artist info, track count,
+        and a representative thumbnail for the grid view.
+        """
+        query = """
+            SELECT 
+                album, 
+                artist, 
+                COUNT(id) as track_count,
+                thumbnail
+            FROM tracks 
+            WHERE album IS NOT NULL AND album != ''
+            GROUP BY album, artist
+            ORDER BY album ASC
+        """
+        with self._get_connection() as conn:
+            cursor = conn.execute(query)
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_tracks_by_album(self, album_name: str, artist_name: str) -> List[Track]:
+        """
+        Fetches all tracks belonging to a specific album.
+        Used when the user clicks an album card to 'Open' it.
+        """
+        query = "SELECT * FROM tracks WHERE album = ? AND artist = ? ORDER BY id"
+        with self._get_connection() as conn:
+            return [self._map_row_to_track(row) for row in conn.execute(query, (album_name, artist_name)).fetchall()]
+
     # write
     def bulk_upsert_tracks(self, tracks: List[Track]):
         """
-        Bulk insertion
+        High-speed batch insertion. Handles thousands of tracks in one disk sync.
+        Uses a transaction to ensure data integrity.
         :param tracks:
         :return:
         """
+        if not tracks:
+            return
+
+        # Prepare the data tuples for executemany
+        # extract the attributes from the Track objects
+        data = []
+        for t in tracks:
+            # Standardized order matching the SQL columns
+            data.append((
+                t.id, t.file_path, t.title, t.artist, t.album,
+                t.genre, t.duration, t.track_number, t.year,
+                t.bitrate, t.file_extension, t.thumbnail,
+                # Convert metadata dict to JSON string for storage
+                json.dumps(t.metadata) if isinstance(t.metadata, dict) else t.metadata
+            ))
+
+        query = """
+            INSERT INTO tracks (
+                id, file_path, title, artist, album, 
+                genre, duration, track_number, year, 
+                bitrate, file_extension, thumbnail, metadata
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+                file_path=excluded.file_path,
+                title=excluded.title,
+                artist=excluded.artist,
+                album=excluded.album,
+                genre=excluded.genre,
+                duration=excluded.duration,
+                metadata=excluded.metadata,
+                thumbnail=COALESCE(excluded.thumbnail, tracks.thumbnail)
+        """
+
+        with self._get_connection() as conn:
+            try:
+                conn.execute("BEGIN TRANSACTION")
+                conn.executemany(query, data)
+                conn.commit()
+            except Exception as e:
+                conn.rollback()
+                raise e
 
     def save_tracks(self, tracks: List[Track]):
         query = """

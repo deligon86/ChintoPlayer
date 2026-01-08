@@ -1,0 +1,76 @@
+<AlbumView>:
+    MDScreenManager:
+
+        MDScreen:
+            name: 'albums_list'
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: '52dp'
+                    MDLabel:
+                        text: "Albums"
+                        theme_font_size: 'Custom'
+                        font_size: '32sp'
+                        bold: True
+
+                MDBoxLayout:
+                    RecyclerView:
+                        id: album_list
+                        viewclass: 'AlbumsItem'
+                        recycler_type: None
+                        scroll_type: ['bars', 'content']
+                        bar_width: dp(10)
+                        ResponsiveRecyclerGridLayout
+                            size_hint_y: None
+                            default_size: '120dp', '160dp'
+                            default_size_hint: None, None
+                            height: self.minimum_height
+                            spacing: '5dp'
+                            padding: '5dp'
+
+        MDScreen:
+            name: 'albums'
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDBoxLayout:
+                    # banner
+                    size_hint_y: .6
+                    MDFloatLayout:
+                        size_hint_x: .6
+                        MDIconButton:
+                            icon: 'chevron-left'
+                            on_release: view_mgr.current = 'albums_list'
+                            pos_hint: {'center_x': .1, 'center_y': .9}
+                        FitImage:
+                            id: album_cover
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+                    MDBoxLayout:
+                        # details
+                        orientation: 'vertical'
+                        MDLabel:
+                            id: album_name
+                            font_size: '26sp'
+                            theme_font_size: 'Custom'
+                        MDLabel:
+                            id: album_songs_count
+                        MDLabel:
+                            id: album_duration
+
+                RecyclerView:
+                    id: album_content
+
+<AlbumsItem>:
+    orientation: 'vertical'
+    size_hint: None, None
+    width: '120dp'
+    height: '140dp'
+
+    FitImage:
+        id: image
+
+    CommonLabel:
+        shorten: True
+        text: root.album
+        size_hint_y: .2
+        radius: [0, 0, root.radius[-2], root.radius[-1]]

@@ -1,10 +1,26 @@
 <SongView>:
     MDBoxLayout:
         orientation: "vertical"
+        spacing: '10dp'
+        padding: '5dp'
         MDBoxLayout:
             size_hint_y: None
             height: '52dp'
             MDLabel:
                 text: "Songs"
+                theme_font_size: 'Custom'
+                font_size: '32sp'
+                bold: True
 
-        MDBoxLayout:
+        RecyclerView:
+            id: song_container
+            key_viewclass: 'viewclass'
+            key_height: 'height'
+            recycler_type: None
+            MDRecycleBoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                spacing: '5dp'
+                default_size: None, '56dp'
+                default_size_hint: 1, None
+                height: self.minimum_height

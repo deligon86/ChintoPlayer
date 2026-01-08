@@ -1,0 +1,13 @@
+<ThemeSelection>:
+    size_hint_y: None
+    height: '48dp'
+    MDCheckbox:
+        id: check
+        group: root.group
+        size_hint: None, None
+        width: root.height
+        height: root.height
+        on_active: root.active = self.active
+
+    MDLabel:
+        text: root.theme

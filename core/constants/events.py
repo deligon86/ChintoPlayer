@@ -32,7 +32,7 @@ class QueueEvent(EventType):
 
 
 class LibraryEvent(EventType):
-    LIBRARY_REFRESHED = "library.refreshed"  # Data: list [updated ids]
+    LIBRARY_REFRESHED = "library.refreshed"  # Data: list [updated tracks]
     LIBRARY_STAT_UPDATED = "library.stat_updated"  # Data: str (track_id)
     LIBRARY_META_CHANGED = "library.meta_changed"  # Data: Track (updated)
     LIBRARY_READY = "library.ready"  # Data : bool True, False

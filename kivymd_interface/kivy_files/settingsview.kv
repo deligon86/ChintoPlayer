@@ -1,0 +1,39 @@
+<SettingsView>:
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: '10dp'
+        padding: '5dp'
+        MDBoxLayout:
+            size_hint_y: None
+            height: '52dp'
+            MDLabel:
+                text: "Settings"
+                theme_font_size: 'Custom'
+                font_size: '32sp'
+                bold: True
+
+        MDScrollView:
+            MDBoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: '5dp'
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: '100dp'
+                    MDLabel:
+                        size_hint_y: None
+                        height: '52dp'
+                        text: 'Theme'
+                        theme_font_size: 'Custom'
+                        font_size: '32sp'
+
+                    MDBoxLayout:
+                        ThemeSelection:
+                            theme: 'Light'
+                            select_callback: root.set_theme
+
+                        ThemeSelection:
+                            theme: 'Dark'
+                            select_callback: root.set_theme

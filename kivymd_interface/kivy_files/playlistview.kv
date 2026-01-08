@@ -1,0 +1,42 @@
+<PlaylistView>:
+    MDBoxLayout:
+        spacing: '10dp'
+        padding: '5dp'
+        MDBoxLayout:
+            orientation: 'vertical'
+            # playlist items
+            size_hint_x: .4
+            padding: [0, 20, 0, 20]
+            MDBoxLayout:
+                size_hint_y: None
+                height: '48dp'
+                MDLabel:
+                    text: "Playlists"
+                    font_size: '32sp'
+                    theme_font_size: 'Custom'
+            MDScrollView:
+                do_scroll_y: True
+                MDBoxLayout:
+
+        MDCard:
+            # playlist songs
+            RecyclerView:
+                id: playlist_content
+
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: '5dp'
+            size_hint_x: .4
+            padding: [0, 20, 0, 20]
+            MDBoxLayout:
+                size_hint_y: None
+                height: '48dp'
+                # search field
+                MDTextField:
+                    MDTextFieldLeadingIcon:
+                        icon: 'magnify'
+                    MDTextFieldHintText:
+                        text: 'search playlist'
+
+            RecyclerView:
+                id: playlist_search_content

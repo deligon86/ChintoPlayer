@@ -1,7 +1,11 @@
+import  os
 from bootstrap import bootstrap
 from kivymd_interface.app import ReloMusicPlayerApp
 from kivymd_interface.views.mainview import MainView
 
+
+# set env
+os.environ['WORKING_DIR'] = os.getcwd()
 
 # presentation with kivymd
 context = bootstrap()

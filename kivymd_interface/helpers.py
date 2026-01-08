@@ -1,5 +1,20 @@
 import sys
 import os
+from kivy.core.image import Image
+from io import BytesIO
+
+
+def load_kivy_image_from_data(image_data, ext=".png"):
+    """
+    Loads image from bytes
+    :param image_data:
+    :param ext:
+    :return:
+    """
+    data = BytesIO(image_data)
+    core_image = Image(data, ext=ext)
+
+    return core_image
 
 
 def _is_frozen() -> bool:

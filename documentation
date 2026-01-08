@@ -3,3 +3,13 @@
 # Next steps
 * Replace kivymd 1.2.0 with latest 2.0.0
 * Implement views ( song, album, playlist, settings) mvps
+* Collapsable Side menu Done
+* Shortened labels all-round Done
+* Minimum settings (theme settings only) Done
+* Implement song item widget Done
+
+* Library scanning
+* Actual data loading
+* Create a custom album list grid container (mvvm-based)
+
+

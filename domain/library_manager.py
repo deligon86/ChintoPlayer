@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List
-
 from core import logger
 from core.constants.events import PlaybackEngineEvent, MediaScannerEvent, LibraryEvent
 from domain.models.song import Track, TrackItem
@@ -39,7 +38,7 @@ class LibraryManager:
 
         # Trigger UI refresh
         self.bus.publish(LibraryEvent.LIBRARY_READY, True)
-        self.bus.publish(LibraryEvent.LIBRARY_REFRESHED, len(updated_ids))
+        self.bus.publish(LibraryEvent.LIBRARY_REFRESHED, tracks)
 
     def _on_track_finished(self, track_id: str):
         """
@@ -61,6 +60,12 @@ class LibraryManager:
         # Publish specific stat update for the UI 'Plays' column
         self.bus.publish(LibraryEvent.LIBRARY_STAT_UPDATED, track_id)
 
+    def get_albums(self):
+        return self.repo.get_albums()
+
+    def get_tracks_by_album(self, album, artist):
+        return self.repo.get_tracks_by_album(album, artist)
+
     def get_queue_manager_context(self) -> BaseItemContainer:
         """
         Creates the 'All Songs' context for the QueueManager
@@ -75,6 +80,17 @@ class LibraryManager:
             items=items
         )
 
-    def check_library(self):
-        if self.songs.get_all_songs():
+    def check_library(self, refresh=False):
+        """
+        Check if library is active
+        :param refresh: Whether to send the updated library
+        :return:
+        """
+        library = self.songs.get_all_songs()
+        if library:
             self.bus.publish(LibraryEvent.LIBRARY_READY, True)
+            if refresh:
+                self.bus.publish(LibraryEvent.LIBRARY_REFRESHED, library)
+
+    def load_library(self):
+        return self.songs.get_all_songs()

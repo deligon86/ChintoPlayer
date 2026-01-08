@@ -1,34 +1,44 @@
-#: import roulette_scrollEffect kivymd.effects.roulettescroll.roulettescroll.RouletteScrollEffect
+#: import stiff_scrollEffect kivymd.effects.stiffscroll.stiffscroll.StiffScrollEffect
 <MainViewSideBar>:
     orientation: "vertical"
     radius: 0
+    MainViewSideBarItem:
+        icon: "menu"
+        on_release: root.set_state()
+         
     MDScrollView:
-        effect_cls: roulette_scrollEffect
+        effect_cls: stiff_scrollEffect
         MDBoxLayout:
             id: container
             size_hint_y: None
             height: self.minimum_height
             spacing: '10dp'
             orientation: 'vertical'
+
             MainViewSideBarItem:
                 icon: "home"
                 text: "Home"
+                bar: root
 
             MainViewSideBarItem:
                 icon: "music-note"
                 text: "Songs"
+                bar: root
 
             MainViewSideBarItem:
                 icon: "album"
                 text: "Albums"
+                bar: root
 
             MainViewSideBarItem:
                 icon: "playlist-music"
                 text: "Playlists"
+                bar: root
 
             MainViewSideBarItem:
                 icon: "cog"
                 text: "Settings"
+                bar: root
 
 
 <MainViewSideBarItem>:
@@ -43,6 +53,8 @@
             size_hint: None, None
             size: [0, 0]
             theme_md_bg_color: 'Custom'
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
     MDFloatLayout:
         size_hint: None, None
         width: root.height + 10
@@ -54,3 +66,4 @@
     CommonLabel:
         text: root.text
         halign: "left"
+        id: label
