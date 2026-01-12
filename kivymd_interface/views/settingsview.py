@@ -6,5 +6,5 @@ from .widgets.settings_widgets import ThemeSelection
 class SettingsView(BaseView):
 
     def set_theme(self, theme):
-        self.context.get('bus').emit(ThemeEvent.THEME_CHANGED, theme)
+        self.context.get('app_bus').publish(ThemeEvent.THEME_CHANGED, theme)
 

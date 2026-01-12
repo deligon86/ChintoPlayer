@@ -4,14 +4,14 @@ from core.constants.events import (
     PlaybackEngineEvent, MediaScannerEvent,
     EventType, PlaybackCommandEvent
 )
-from core.event import _Event, Event
+from core.event import DefaultEvent, Event
 
 
 class EventBus:
     def __init__(self):
         self._lock = threading.RLock()
         # Registry mapping EventType to your custom Event objects
-        self._registry: Dict[EventType, _Event] = {}
+        self._registry: Dict[EventType, DefaultEvent] = {}
 
         # Pre-initialize known high-frequency events with throttling
         self._setup_default_events()
@@ -32,10 +32,10 @@ class EventBus:
         self._registry[MediaScannerEvent.SCANNER_PROGRESS] = Event(dict, interval_sec=1)
 
         # command events will have not throttle
-        self._registry[PlaybackCommandEvent.PLAYBACK_REQUEST] = _Event()
-        self._registry[PlaybackEngineEvent.PLAYBACK_COMPLETED] = _Event()
+        self._registry[PlaybackCommandEvent.PLAYBACK_REQUEST] = DefaultEvent()
+        self._registry[PlaybackEngineEvent.PLAYBACK_COMPLETED] = DefaultEvent()
 
-    def _get_event(self, event_type: EventType) -> _Event:
+    def _get_event(self, event_type: EventType) -> DefaultEvent:
         """
         Lazy loading of events not pre-configured
         :param event_type
@@ -43,7 +43,7 @@ class EventBus:
         """
         with self._lock:
             if event_type not in self._registry:
-                self._registry[event_type] = _Event()
+                self._registry[event_type] = DefaultEvent()
             return self._registry[event_type]
 
     def subscribe(self, event_type: EventType, callback: Callable, priority: int = 0):

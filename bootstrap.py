@@ -37,7 +37,7 @@ def bootstrap():
     db_path = os.path.join(os.getcwd(), db_path/ "library.db")
     bus = EventBus()
 
-    debugger = EventDebugger()
+    debugger = EventDebugger(print_console=True)
     bus.add_event_debugger(debugger)
 
     # Persistence layer
@@ -71,13 +71,16 @@ if __name__ == "__main__":
 
     # register events
     app_context['bus'].subscribe(LibraryEvent.LIBRARY_READY, library_updated_event)
-    # app_context['bus'].subscribe(MediaScannerEvent.SCANNER_PROGRESS, scan_progress_log)
+    app_context['bus'].subscribe(MediaScannerEvent.SCANNER_PROGRESS, scan_progress_log)
     app_context['bus'].subscribe(MediaScannerEvent.SCANNER_ERROR, scan_error)
 
     # Start a scan if first time
-    #app_context["bus"].publish(MediaScannerEvent.SCANNER_START, {
-    #    'mode': ScannerScanMode.SINGLE, 'payload': Path(os.path.expanduser('~')) / 'Music'
-    #})
+    app_context["bus"].publish(MediaScannerEvent.SCANNER_START, {
+        'mode': ScannerScanMode.SINGLE, 'payload': Path(os.path.expanduser('~')) / 'Music'
+    })
+    # start scheduler
+    app_context['scheduler'].start_loop()
+
     loaded = False
     # if second time and database is populated
     #app_context['bus'].publish(LibraryEvent.LIBRARY_READY, True)
@@ -95,4 +98,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nShutting down...")
         app_context['bus'].publish(PlaybackEngineEvent.KILL, -100083)  # use a random number for now
-
+        app_context['scheduler'].stop()

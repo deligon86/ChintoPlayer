@@ -9,7 +9,7 @@ from core import logger
 from threading import Timer
 
 
-class _Event:
+class DefaultEvent:
     def __init__(self):
         self._slots = []
         self._lock = threading.RLock()
@@ -50,7 +50,7 @@ class _Event:
                 logger.warning(f"Priority Slot Error: {e}")
 
 
-class ThrottledEvent(_Event):
+class ThrottledDefaultEvent(DefaultEvent):
 
     def __init__(self, interval_sec=0.1):
         super().__init__()
@@ -85,7 +85,7 @@ class ThrottledEvent(_Event):
         super().emit(*args, **kwargs)
 
 
-class Event(ThrottledEvent):
+class Event(ThrottledDefaultEvent):
     def __init__(self, *arg_types, interval_sec=0.1):
         super().__init__(interval_sec=interval_sec)
         self._arg_types = arg_types

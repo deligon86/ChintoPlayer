@@ -1,12 +1,14 @@
 from kivy.clock import mainthread
+from kivy.metrics import dp
 from .base import BaseView
 from kivymd.uix.card.card import MDCard
 from kivy.properties import (
     StringProperty, ObjectProperty,
     NumericProperty
 )
+from kivy.factory import Factory
 from ..helpers import load_kivy_image_from_data
-from core.utility.utils import load_default_image
+from core.utility.utils import load_default_image, convert_to_jpeg
 
 
 class AlbumsItem(MDCard):
@@ -26,7 +28,7 @@ class AlbumsItem(MDCard):
         :return:
         """
         if data:
-            image = load_kivy_image_from_data(data)
+            image = load_kivy_image_from_data(convert_to_jpeg(data), ext="jpeg")
             self.ids.image.texture = image.texture
         else:
             # load default image
@@ -48,9 +50,12 @@ class AlbumView(BaseView):
         :param data:
         :return:
         """
-        print(data[0])
-        self.ids.album_list.data = data
-        self.ids.album_list.refresh_from_data()
-        print("Album RV data: ", len(self.ids.album_list.data))
-        print("Album RV LM: ", self.ids.album_list.layout_manager)
-        print("Album RV LM children: ", self.ids.album_list.layout_manager.children)
+        for item in data:
+            thumbnail = item.pop('thumbnail')
+            width = self.ids.album_grid.standard_card_width
+            item['size'] = [width, width + dp(20)]
+            album_item = AlbumsItem(**item)
+            self.ids.album_grid.add_widget(album_item)
+            album_item.thumbnail = thumbnail
+
+Factory.register("AlbumsItem", cls=AlbumsItem)

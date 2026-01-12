@@ -35,7 +35,6 @@ class AlbumViewModel:
         :return:
         """
         # add view class
-        for item in album_data:
-            item['viewclass'] = "AlbumItem"
-
+        #for item in album_data:
+        #    item['viewclass'] = "AlbumsItem"
         self.album_data_event.emit(album_data)

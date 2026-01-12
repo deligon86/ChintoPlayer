@@ -2,22 +2,19 @@ from kivy.properties import ObjectProperty
 
 from core import logger
 from kivymd_interface.views.base import BaseView
-# imports to avoid kivy factory exception
-from kivymd_interface.views.widgets.common import (
-    CommonLabel, RecyclerView, ResponsiveRecyclerGridLayout
-)
+from kivymd_interface.views.songview import SongView
+from kivymd_interface.views.homeview import HomeView
+from kivymd_interface.views.albumview import AlbumView
+from kivymd_interface.views.playlistview import PlaylistView
+from kivymd_interface.views.settingsview import SettingsView
+from kivymd_interface.app_core.app_events import UIEvent
+from kivymd_interface.viewmodels.songviewmodel import SongViewModel
+from kivymd_interface.viewmodels.albumviewmodel import AlbumViewModel
+from kivymd_interface.viewmodels.playlistviewmodel import PlaylistViewModel
+# register to factory
 from kivymd_interface.views.widgets.mainview_side_bar import (
     MainViewSideBar, MainViewSideBarItem
 )
-from .songview import SongView
-from .homeview import HomeView
-from .albumview import AlbumView, AlbumsItem
-from .playlistview import PlaylistView
-from .settingsview import SettingsView
-from ..app_core.app_events import UIEvent
-from ..viewmodels.songviewmodel import SongViewModel
-from ..viewmodels.albumviewmodel import AlbumViewModel
-
 
 class MainView(BaseView):
     song_view = ObjectProperty(SongView)
@@ -30,16 +27,19 @@ class MainView(BaseView):
         super().__init__(context, **kwargs)
 
         self.initialize_views()
-        self.context.get('bus').subscribe(UIEvent.SIDEBAR_ACTIVE_VIEW, self.change_screen)
+        self.context.get('app_bus').subscribe(UIEvent.SIDEBAR_ACTIVE_VIEW, self.change_screen)
 
     def initialize_views(self):
         """
         Call once to set views
         :return:
         """
-        self.song_view = SongView(name="song_view", context=self.context, view_model=SongViewModel(context=self.context))
-        self.album_view = AlbumView(name="album_view", context=self.context, view_model=AlbumViewModel(context=self.context))
-        self.playlist_view = PlaylistView(name="playlist_view", context=self.context)
+        self.song_view = SongView(name="song_view", context=self.context,
+                                  view_model=SongViewModel(context=self.context))
+        self.album_view = AlbumView(name="album_view", context=self.context,
+                                    view_model=AlbumViewModel(context=self.context))
+        self.playlist_view = PlaylistView(name="playlist_view", context=self.context,
+                                          view_model=PlaylistViewModel(context=self.context))
         self.settings_view = SettingsView(name="settings_view", context=self.context)
         self.home_view = HomeView(name="home_view", context=self.context)
         views = [self.song_view, self.album_view, self.playlist_view, self.settings_view,

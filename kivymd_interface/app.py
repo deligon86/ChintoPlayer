@@ -1,17 +1,18 @@
 import os
 from kivy.core.window import Window
 
-from core.constants.events import LibraryEvent
 
 Window.minimum_width = 600
 Window.minimum_height = 500
+Window.size = (1100, 600)
 
 
-from kivy.lang import Builder
 from kivymd.app import MDApp
-from .app_core.app_events import ThemeEvent, UIEvent
-from .helpers import resource_path
 from kivy.clock import Clock
+from kivy.lang import Builder
+from kivymd_interface.helpers import resource_path
+from kivymd_interface.app_core.ui_event_bus import UIEventBus
+from kivymd_interface.app_core.app_events import ThemeEvent, UIEvent
 
 
 class ReloMusicPlayerApp(MDApp):
@@ -21,7 +22,11 @@ class ReloMusicPlayerApp(MDApp):
         self._context = context
         self.main_window = None
         self.main_window_cls = main_window
-        self.context.get('bus').subscribe(ThemeEvent.THEME_CHANGED, self.handle_theme_change)
+        self.app_bus = UIEventBus(debug=True)
+        self.app_bus.subscribe(ThemeEvent.THEME_CHANGED, self.handle_theme_change)
+
+        # throw app bus to context
+        self._context['app_bus'] = self.app_bus
 
     @property
     def context(self):
@@ -41,15 +46,20 @@ class ReloMusicPlayerApp(MDApp):
         self.load_kivy_files(resource_path("kivymd_interface/kivy_files"))
 
         self.main_window = self.main_window_cls(self._context)
-        self.context.get('bus').emit(ThemeEvent.THEME_CHANGED, 'Dark')
+        self.app_bus.publish(ThemeEvent.THEME_CHANGED, 'Dark')
+
+        # change screen quickly for debugging the current screen that am modifying
+        self.app_bus.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, 'settings_view')
 
         return self.main_window
 
     def on_start(self):
+        """
+        :return:
+        """
         # give more room for more event subscription
-        Clock.schedule_once(self.schedule_events, 10)  # after 10 secs
+        #Clock.schedule_once(self.schedule_events, 1)  # after 10 secs
 
     def schedule_events(self, *args):
-        self.context.get('bus').emit(UIEvent.APP_READY, True)
         # load library
-        self.context.get('library').check_library()
+        self.context.get('library').check_library(2)

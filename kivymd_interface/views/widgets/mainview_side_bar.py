@@ -7,6 +7,8 @@ from kivy.properties import (
     BooleanProperty, NumericProperty, OptionProperty
 )
 from kivymd_interface.app_core.app_events import UIEvent
+from kivy.factory import Factory
+
 
 class MainViewSideBarItem(MDCard):
     icon = StringProperty()
@@ -88,9 +90,9 @@ class MainViewSideBar(MDCard):
 
         # send to bus
         if not self._bus_context:
-            self._bus_context = running_app().context.get('bus')
+            self._bus_context = running_app().context.get('app_bus')
 
-        self._bus_context.emit(UIEvent.SIDEBAR_ACTIVE_VIEW, get_view_name(item.text))
+        self._bus_context.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, get_view_name(item.text))
 
     def set_state(self):
         """
@@ -125,3 +127,4 @@ class MainViewSideBar(MDCard):
                         item.collapse()
                 # collapse
                 Animation(width=dp(self.bar_width), duration=self.close_duration).start(self)
+

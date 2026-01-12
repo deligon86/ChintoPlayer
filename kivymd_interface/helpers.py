@@ -1,7 +1,30 @@
 import sys
 import os
+import string
 from kivy.core.image import Image
 from io import BytesIO
+from kivymd.app import MDApp
+
+
+# string formatter
+def clean_string(text: str, omit:list = None):
+    """
+    Removes the punctuation characters
+    :param text:
+    :param omit: The characters to exclude in the
+    :return:
+    """
+    exclude = omit if omit is not None else string.punctuation
+    transformer = str.maketrans('', '', exclude)
+    return text.translate(transformer)
+
+
+def running_app():
+    """
+    Gets the active application
+    :return:
+    """
+    return MDApp.get_running_app()
 
 
 def load_kivy_image_from_data(image_data, ext=".png"):

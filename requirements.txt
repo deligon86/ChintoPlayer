@@ -7,3 +7,5 @@ numpy
 scipy
 https://github.com/kivymd/KivyMD/archive/master.zip
 pyside6
+olefile
+ffpyplayer

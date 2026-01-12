@@ -89,7 +89,7 @@ class MediaScanner:
 
             return count
 
-        if self.status== ScannerState.SCAN:
+        if self.status == ScannerState.SCAN:
             logger.warning(f"[Media Scanner] Scanner already active, cannot scan")
             return
 
@@ -155,15 +155,27 @@ class MediaScanner:
         self._scheduler.add_job(self._scan_job_id, self.scan, after, (), unique=True)
         logger.info(f"[Media Scanner] Scheduled scanning after {after} seconds")
 
-    def receive_scan_events(self, payload: dict):
+    def receive_scan_events(self, payload: dict | None = None):
         """
         :param payload:
         :return:
         """
-        msg = f"[Media Scanner] Scan payload: {payload}"
-        logger.info(msg)
-        mode = payload.get('mode')
-        if mode == ScannerScanMode.SINGLE:
-            self.add_directory(payload.get('payload'))
+        if payload:
+            msg = f"[Media Scanner] Scan payload: {payload}"
+            logger.info(msg)
+            mode = payload.get('mode')
+            if mode == ScannerScanMode.SINGLE:
+                self.add_directory(payload.get('payload'))
+            else:
+                self.add_directories(payload.get('payload'))
         else:
-            self.add_directories(payload.get('payload'))
+            # use common directories
+            self.add_directories(self._get_common())
+
+    def _get_common(self):
+        common = ["Music"]
+        directories = []
+        for c in common:
+            directories.append(os.path.join(os.path.expanduser('~'), c))
+
+        return directories

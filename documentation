@@ -1,15 +1,27 @@
 * The loading of modules is slow when running on kivy interface
 
 # Next steps
-* Replace kivymd 1.2.0 with latest 2.0.0
-* Implement views ( song, album, playlist, settings) mvps
+* Replace kivymd 1.2.0 with latest 2.0.1 - Done
+* Implement views ( song, album, playlist, settings) mvps - Done
 * Collapsable Side menu Done
 * Shortened labels all-round Done
 * Minimum settings (theme settings only) Done
 * Implement song item widget Done
 
-* Library scanning
-* Actual data loading
-* Create a custom album list grid container (mvvm-based)
+* Library scanning with UI linking
+* Actual data loading - Done
+* Playlist Crud
+    - create playlist - Done
+    - rename playlist
+    - add songs
+    - remove songs
+    - delete playlist
+    On progress
+    - Create the playlist button on create playlist - Done
+    - Add ability for the repo and library to return error message as it is on playlist create error - Done
+    - Add create callbacks on create dialog - Done
+* Implement the menu dropdown for song item widget
+* Fix light theme rendering only in sidebar
 
+* Create a custom album list grid container (mvvm-based) - later on after v1.0
 

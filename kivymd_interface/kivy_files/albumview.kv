@@ -1,6 +1,6 @@
 <AlbumView>:
     MDScreenManager:
-
+        id: view_mgr
         MDScreen:
             name: 'albums_list'
             MDBoxLayout:
@@ -10,21 +10,16 @@
                     height: '52dp'
                     MDLabel:
                         text: "Albums"
-                        theme_font_size: 'Custom'
-                        font_size: '32sp'
-                        bold: True
+                        font_style: 'Display'
+                        role: 'small'
 
                 MDBoxLayout:
-                    RecyclerView:
-                        id: album_list
-                        viewclass: 'AlbumsItem'
-                        recycler_type: None
-                        scroll_type: ['bars', 'content']
+                    MDScrollView:
                         bar_width: dp(10)
-                        ResponsiveRecyclerGridLayout
+                        do_scroll_x: False
+                        ResponsiveGrid:
+                            id: album_grid
                             size_hint_y: None
-                            default_size: '120dp', '160dp'
-                            default_size_hint: None, None
                             height: self.minimum_height
                             spacing: '5dp'
                             padding: '5dp'
@@ -63,14 +58,15 @@
 <AlbumsItem>:
     orientation: 'vertical'
     size_hint: None, None
-    width: '120dp'
-    height: '140dp'
+    radius: 10
 
     FitImage:
         id: image
+        radius: [root.radius[0], root.radius[1], 0, 0]
 
     CommonLabel:
         shorten: True
         text: root.album
         size_hint_y: .2
+        padding: [10, 0, 0, 5]
         radius: [0, 0, root.radius[-2], root.radius[-1]]

@@ -1,6 +1,7 @@
 <ThemeSelection>:
     size_hint_y: None
     height: '48dp'
+    spacing: '8dp'
     MDCheckbox:
         id: check
         group: root.group
@@ -8,6 +9,8 @@
         width: root.height
         height: root.height
         on_active: root.active = self.active
+        pos_hint: {'center_x': .5, 'center_y': .5}
 
     MDLabel:
         text: root.theme
+        valign: 'center'

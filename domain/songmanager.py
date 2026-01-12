@@ -7,12 +7,12 @@ class SongManager:
     def __init__(self, repo: MusicRepository):
         self._repo = repo
 
-    def get_all_songs(self) -> List[Track]:
+    def get_all_songs(self, limit=None) -> List[Track]:
         """
         Returns full library without thumbnails
         :return
         """
-        return self._repo.get_all_tracks_no_blobs()
+        return self._repo.get_all_tracks_no_blobs(limit)
 
     def get_all_tracks_light(self) -> List[Track]:
         """

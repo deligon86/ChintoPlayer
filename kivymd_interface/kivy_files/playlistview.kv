@@ -12,16 +12,29 @@
                 height: '48dp'
                 MDLabel:
                     text: "Playlists"
-                    font_size: '32sp'
-                    theme_font_size: 'Custom'
-            MDScrollView:
-                do_scroll_y: True
-                MDBoxLayout:
+                    font_style: 'Display'
+                    role: 'small'
+            PlaylistContainer:
+                id: playlist_container
+                playlist_callback: root.playlist_callback
+
+            MDBoxLayout:
+                size_hint_y: None
+                height: '56dp'
+                padding: '5dp'
+                PlaylistCreateButton:
+                    icon: 'plus'
+                    text: 'New Playlist'
+                    on_release: root.open_create_playlist_dialog()
 
         MDCard:
             # playlist songs
+            radius: '5dp'
+            focus_behavior: False
             RecyclerView:
                 id: playlist_content
+                key_viewclass: 'viewclass'
+                recycler_type: 'boxlayout'
 
         MDBoxLayout:
             orientation: "vertical"
@@ -40,3 +53,5 @@
 
             RecyclerView:
                 id: playlist_search_content
+                recycler_type: 'boxlayout'
+                key_viewclass: 'viewclass'

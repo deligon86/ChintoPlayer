@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from datetime import datetime
 from core import logger
 from domain.models.song import Track, TrackItem
@@ -35,7 +35,7 @@ class MusicRepository:
                 CREATE INDEX IF NOT EXISTS idx_track_date ON tracks(created_at);
 
                 CREATE TABLE IF NOT EXISTS containers (
-                    id TEXT PRIMARY KEY, name TEXT, type TEXT, created_at TEXT
+                    id TEXT PRIMARY KEY, name TEXT UNIQUE, type TEXT, created_at TEXT
                 );
 
                 CREATE TABLE IF NOT EXISTS container_items (
@@ -47,7 +47,7 @@ class MusicRepository:
             """)
 
     # read
-    def get_all_tracks_no_blobs(self) -> List[Track]:
+    def get_all_tracks_no_blobs(self, limit=None) -> List[Track]:
         """
         Fetch library metadata without the heavy thumbnail BLOBs.
         :return: 
@@ -55,10 +55,19 @@ class MusicRepository:
         query = """
             SELECT id, title, artist, album, duration, file_path, 
                    genre, year, play_count, metadata 
+            FROM tracks LIMIT ?
+        """
+        query_2 =  """
+            SELECT id, title, artist, album, duration, file_path, 
+                   genre, year, play_count, metadata 
             FROM tracks
         """
         with self._get_connection() as conn:
-            cursor = conn.execute(query)
+            if limit:
+                cursor = conn.execute(query, (limit, ))
+            else:
+                cursor = conn.execute(query_2)
+
             return [self._map_row_to_track(row) for row in cursor.fetchall()]
 
     def search_tracks(self, query: str) -> List[Track]:
@@ -236,7 +245,7 @@ class MusicRepository:
             conn.commit()
 
     #Container and playlist operations
-    def save_playlist_metadata(self, playlist_id: str, name: str):
+    def save_playlist_metadata(self, playlist_id: str, name: str) -> Tuple[bool, str]:
         """
         Creates or updates the playlist header.
         """
@@ -245,9 +254,17 @@ class MusicRepository:
             VALUES (?, ?, 'playlist', ?)
             ON CONFLICT(id) DO UPDATE SET name=excluded.name
         """
-        with self._get_connection() as conn:
-            conn.execute(query, (playlist_id, name, datetime.now().isoformat()))
-            conn.commit()
+        try:
+            with self._get_connection() as conn:
+                conn.execute(query, (playlist_id, name, datetime.now().isoformat()))
+                conn.commit()
+            return True, ''
+        except Exception as e:
+            logger.warning(f"[MusicRepo] Error inserting playlist container, error {e}")
+            if "UNIQUE" in e:
+                e = "Duplicate Playlist"
+
+            return False, str(e)
 
     def add_tracks_to_playlist(self, playlist_id: str, items: List[TrackItem]):
         """
@@ -408,6 +425,18 @@ class MusicRepository:
             row = conn.execute(query, (playlist_id,)).fetchone()
 
             return row['name'] if row else "Unknown Playlist"
+
+    def get_all_playlists(self) -> list | None:
+        """
+        :return:
+        """
+        query = "SELECT id, name FROM containers WHERE type = 'playlist'"
+        with self._get_connection() as conn:
+            rows = conn.execute(query).fetchall()
+            if rows:
+                return [{'id': row[0], 'name': row[1]} for row in rows]
+            else:
+                return None
 
     def get_thumbnail_blob(self, track_id: str) -> Optional[bytes]:
         """

@@ -8,9 +8,8 @@
             height: '52dp'
             MDLabel:
                 text: "Settings"
-                theme_font_size: 'Custom'
-                font_size: '32sp'
-                bold: True
+                font_style: 'Display'
+                role: 'small'
 
         MDScrollView:
             MDBoxLayout:
@@ -18,6 +17,7 @@
                 height: self.minimum_height
                 orientation: 'vertical'
                 spacing: '5dp'
+                padding: '10dp'
                 MDBoxLayout:
                     orientation: 'vertical'
                     size_hint_y: None
@@ -27,9 +27,12 @@
                         height: '52dp'
                         text: 'Theme'
                         theme_font_size: 'Custom'
-                        font_size: '32sp'
+                        font_size: '25sp'
 
                     MDBoxLayout:
+                        size_hint_x: None
+                        width: '250dp'
+                        padding: '5dp'
                         ThemeSelection:
                             theme: 'Light'
                             select_callback: root.set_theme

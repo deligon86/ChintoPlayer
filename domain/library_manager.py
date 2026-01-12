@@ -13,13 +13,18 @@ class LibraryManager:
         self.repo = repo
         self.bus = bus
 
-        self.songs = SongManager(repo)
-        self.playlists = PlaylistManager(repo)
+        self._songs = SongManager(repo)
+        self._playlists = PlaylistManager(repo)
 
         self._last_play_time = {}
+        self._available = False
 
         self.bus.subscribe(PlaybackEngineEvent.PLAYBACK_COMPLETED, self._on_track_finished)
         self.bus.subscribe(MediaScannerEvent.SCANNER_FINISHED, self._on_scan_finished)
+
+    @property
+    def library_available(self):
+        return self._available
 
     def _on_scan_finished(self, tracks: List[Track]):
         """
@@ -71,7 +76,7 @@ class LibraryManager:
         Creates the 'All Songs' context for the QueueManager
         :return:
         """
-        all_songs = self.songs.get_all_songs()
+        all_songs = self._songs.get_all_songs()
         items = [TrackItem(track=t) for t in all_songs]
 
         return BaseItemContainer(
@@ -80,17 +85,38 @@ class LibraryManager:
             items=items
         )
 
-    def check_library(self, refresh=False):
+    def check_library(self, refresh=False, limit=None):
         """
         Check if library is active
+        :param limit:
         :param refresh: Whether to send the updated library
         :return:
         """
-        library = self.songs.get_all_songs()
+        library = self._songs.get_all_songs(limit)
         if library:
+            self._available = True
             self.bus.publish(LibraryEvent.LIBRARY_READY, True)
             if refresh:
                 self.bus.publish(LibraryEvent.LIBRARY_REFRESHED, library)
+        else:
+            self.bus.publish(MediaScannerEvent.SCANNER_START)
 
-    def load_library(self):
-        return self.songs.get_all_songs()
+    def load_library(self, limit=None):
+        return self._songs.get_all_songs(limit)
+
+    # playlist orchestration
+    def create_playlist(self, name: str, tracks: List[Track] = None):
+        """
+        Create a new playlist
+        :param name:
+        :param tracks:
+        :return:
+        """
+        playlist = self._playlists.create_playlist(name, tracks)
+        if not isinstance(playlist, str):
+            self.bus.publish(LibraryEvent.PLAYLIST_CREATED, {'id': playlist.id, 'name': playlist.name})
+        else:
+            self.bus.publish(LibraryEvent.PLAYLIST_CREATE_ERROR, playlist)  # publish the error message
+
+    def get_all_playlists(self):
+        return self._playlists.get_playlists()

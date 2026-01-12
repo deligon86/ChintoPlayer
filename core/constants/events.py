@@ -36,6 +36,8 @@ class LibraryEvent(EventType):
     LIBRARY_STAT_UPDATED = "library.stat_updated"  # Data: str (track_id)
     LIBRARY_META_CHANGED = "library.meta_changed"  # Data: Track (updated)
     LIBRARY_READY = "library.ready"  # Data : bool True, False
+    PLAYLIST_CREATED = "library.playlist_create" # Data: Dict playlist id, playlist name
+    PLAYLIST_CREATE_ERROR = "library.playlist_create.error"
 
 
 class ThumbnailEvent(EventType):

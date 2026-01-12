@@ -10,23 +10,29 @@ class PlaylistManager:
     def __init__(self, repo: MusicRepository):
         self._repo = repo
 
-    def create_playlist(self, name: str, tracks: List[Track] = None) -> Playlist:
+    def create_playlist(self, name: str, tracks: List[Track] = None) -> Playlist | str:
         """
         Creates a new persistent playlist with unique ID.
         :param name:
         :param tracks:
         :return:
         """
+        if not name:
+            # return an error message
+            return "Playlist name cannot be empty"
         playlist_id = str(uuid.uuid4())
         created_at = datetime.now()
 
         # Wrap tracks in TrackItem with metadata
         items = [TrackItem(track=t, added_at=created_at) for t in (tracks or [])]
 
-        # 1. Save Header
-        self._repo.save_playlist_metadata(playlist_id, name)
+        #Save Header
+        valid = self._repo.save_playlist_metadata(playlist_id, name)
+        if not valid[0]:
+            # return the error message
+            return valid[1]
 
-        # 2. Save Items (if any)
+        #Save Items (if any)
         if items:
             self._repo.add_tracks_to_playlist(playlist_id, items)
 
@@ -52,6 +58,12 @@ class PlaylistManager:
             items = self._repo.get_tracks_by_container(playlist_id)
 
         return Playlist(id=playlist_id, name=name, items=items)
+
+    def get_playlists(self):
+        """
+        :return:
+        """
+        return self._repo.get_all_playlists()
 
     def add_track_to_playlist(self, playlist_id: str, track: Track):
         """
