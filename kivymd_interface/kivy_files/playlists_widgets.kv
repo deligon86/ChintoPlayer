@@ -1,0 +1,56 @@
+<PlaylistCreateButton>:
+    radius: '5dp'
+    opacity: .8
+    padding: '10dp'
+    MDFloatLayout:
+        size_hint_x: None
+        width: root.height
+        MDIcon:
+            icon: root.icon
+            theme_text_color: 'Custom'
+            text_color: self.theme_cls.tertiaryColor
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
+    MDLabel:
+        text: root.text
+        shorten: True
+        shorten_from: 'right'
+
+
+<PlaylistButton>:
+    spacing: '5dp'
+    radius: '5dp'
+    size_hint_y: None
+    height: '40dp'
+    theme_bg_color: 'Custom'
+    MDFloatLayout:
+        size_hint_x: None
+        width: '5dp'
+        MDBoxLayout:
+            id: marker
+            size_hint: None, None
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
+    MDLabel:
+        text: root.text
+
+
+<PlaylistContainer>:
+    MDScrollView:
+        MDBoxLayout:
+            id: container
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: '5dp'
+            orientation: 'vertical'
+
+
+<PlaylistCreateDialogContent>:
+    size_hint_y: None
+    height: '60dp'
+    MDTextField:
+        id: field
+        mode: 'outlined'
+        on_text_validate: root.on_field_input(self.text)
+        MDTextFieldHintText:
+            text: 'Playlist name'
