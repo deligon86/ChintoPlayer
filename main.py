@@ -1,7 +1,7 @@
 import  os
 
 # set env
-os.environ['KIVY_NO_CONSOLELOG'] = "1"
+#os.environ['KIVY_NO_CONSOLELOG'] = "1"
 os.environ['WORKING_DIR'] = os.getcwd()
 
 from bootstrap import bootstrap

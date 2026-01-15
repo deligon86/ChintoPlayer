@@ -49,7 +49,7 @@ class ReloMusicPlayerApp(MDApp):
         self.app_bus.publish(ThemeEvent.THEME_CHANGED, 'Dark')
 
         # change screen quickly for debugging the current screen that am modifying
-        self.app_bus.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, 'settings_view')
+        self.app_bus.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, 'song_view')
 
         return self.main_window
 
@@ -58,7 +58,7 @@ class ReloMusicPlayerApp(MDApp):
         :return:
         """
         # give more room for more event subscription
-        #Clock.schedule_once(self.schedule_events, 1)  # after 10 secs
+        Clock.schedule_once(self.schedule_events, 1)  # after 10 secs
 
     def schedule_events(self, *args):
         # load library

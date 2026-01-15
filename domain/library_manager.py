@@ -9,12 +9,12 @@ from domain.songmanager import SongManager
 
 
 class LibraryManager:
-    def __init__(self, repo, bus):
+    def __init__(self, repo, bus, playlist_manager):
         self.repo = repo
         self.bus = bus
 
         self._songs = SongManager(repo)
-        self._playlists = PlaylistManager(repo)
+        self._playlists = playlist_manager
 
         self._last_play_time = {}
         self._available = False
@@ -25,6 +25,14 @@ class LibraryManager:
     @property
     def library_available(self):
         return self._available
+
+    @property
+    def playlist_manager(self):
+        return self._playlists
+
+    @property
+    def song_manager(self):
+        return self._songs
 
     def _on_scan_finished(self, tracks: List[Track]):
         """
@@ -84,6 +92,20 @@ class LibraryManager:
             name="All Songs",
             items=items
         )
+
+    def get_song_by_id(self, song_id):
+        """
+        :param song_id:
+        :return:
+        """
+        return self._songs.get_song(song_id)
+
+    def get_thumbnail(self, song_id):
+        """
+        :param song_id:
+        :return:
+        """
+        return self.repo.get_thumbnail_blob(song_id)
 
     def check_library(self, refresh=False, limit=None):
         """

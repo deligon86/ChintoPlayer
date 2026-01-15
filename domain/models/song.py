@@ -11,7 +11,7 @@ class Track:
     album: str
     duration: int
     file_path: str
-    thumbnail: str | None
+    thumbnail: str | bytes | None
     genre: str
     year: str
     metadata: Dict[str, Any] = field(default_factory=dict)
@@ -41,7 +41,7 @@ class TrackItem:
 
     def to_dict(self):
         return {
-            "added_at": self.added_at,
+            "added_at": self.added_at.strftime("%d/%m/%y %H:%M:%S"),
             "played": self.played,
             "play_count": self.play_count,
             "is_current": self.is_current

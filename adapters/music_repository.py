@@ -39,7 +39,7 @@ class MusicRepository:
                 );
 
                 CREATE TABLE IF NOT EXISTS container_items (
-                    container_id TEXT, track_id TEXT, position INTEGER,
+                    container_id TEXT, track_id TEXT UNIQUE, position INTEGER,
                     added_at TEXT, play_count INTEGER DEFAULT 0,
                     FOREIGN KEY(container_id) REFERENCES containers(id) ON DELETE CASCADE,
                     FOREIGN KEY(track_id) REFERENCES tracks(id) ON DELETE CASCADE

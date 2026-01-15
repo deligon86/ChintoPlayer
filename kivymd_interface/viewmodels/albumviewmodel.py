@@ -10,7 +10,7 @@ class AlbumViewModel:
 
     def __init__(self, context):
         self._context = context
-        self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
+        # self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
 
     def register_load_albums(self, func):
         """

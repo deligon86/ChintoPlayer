@@ -54,3 +54,30 @@
         on_text_validate: root.on_field_input(self.text)
         MDTextFieldHintText:
             text: 'Playlist name'
+
+
+<PlaylistSelectionDialogContent>:
+    # size_hint_y: None
+    MDScrollView:
+        MDBoxLayout:
+            id: container
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: '5dp'
+            orientation: 'vertical'
+            padding: '5dp'
+
+
+<PlaylistSelectionItem>:
+    size_hint_y: None
+    height: '48dp'
+    spacing: '5dp'
+    MDFloatLayout:
+        size_hint_x: None
+        width: '5dp'
+        MDBoxLayout:
+            size_hint: None, None
+            id: marker
+
+    MDLabel:
+        text: root.text

@@ -7,6 +7,7 @@ from core.event_bus import EventBus
 from core.event_debugger import EventDebugger
 from core.scheduler import Scheduler
 from domain.enums.media_scanner import ScannerScanMode
+from domain.playlist_manager import PlaylistManager
 from domain.queue_manager import QueueManager
 from domain.library_manager import LibraryManager
 from pathlib import Path
@@ -45,9 +46,9 @@ def bootstrap():
 
     # Domain manager
     queue_manager = QueueManager(bus)
-
+    playlist_manager = PlaylistManager(repo=repo)
     # LibraryManager coordinates cross-manager logic and scanner events
-    library_manager = LibraryManager(repo, bus)
+    library_manager = LibraryManager(repo, bus, playlist_manager)
 
     # Initialize hardware/IO Adapters
     scanner = MediaScanner(bus, scheduler=scheduler)
@@ -63,6 +64,7 @@ def bootstrap():
         "scheduler": scheduler,
         "library": library_manager,
         "audio_service": audio_engine,
+        'playlist_manager': playlist_manager
     }
 
 

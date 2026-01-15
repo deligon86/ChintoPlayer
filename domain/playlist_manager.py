@@ -1,6 +1,8 @@
 import uuid
 from typing import List, Optional
 from datetime import datetime
+
+from core import logger
 from domain.models.playlist import Playlist
 from domain.models.song import TrackItem, Track
 from adapters.music_repository import MusicRepository
@@ -61,17 +63,24 @@ class PlaylistManager:
 
     def get_playlists(self):
         """
-        :return:
+        Get all playlists
+        :return: List[{'name': playlist name, 'id': playlist id}]
         """
         return self._repo.get_all_playlists()
 
-    def add_track_to_playlist(self, playlist_id: str, track: Track):
+    def add_track_to_playlist(self, playlist_id: str, track: Track | str):
         """
         Adds a track to the end of the playlist.
         :param playlist_id:
-        :param track:
+        :param track: Track or song id
         :return:
         """
+        if isinstance(track, str):
+            # pull track item
+            track_data = self._repo.get_tracks_by_ids([track])
+            track = track_data[0]
+
+        logger.info(f"[Playlist Manager] Adding track to playlist {track.to_dict()}")
         item = TrackItem(track=track, added_at=datetime.now())
         self._repo.add_tracks_to_playlist(playlist_id, [item])
 

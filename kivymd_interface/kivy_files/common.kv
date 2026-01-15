@@ -24,3 +24,26 @@
         MDIconButton:
             icon: 'dots-vertical'
             pos_hint: {'center_x': .5, 'center_y': .5}
+            on_release: root.on_more_pressed(self)
+
+<TagItem>:
+    size_hint_y: None
+    height: '48dp'
+    MDLabel:
+        text: root.tag_name
+        size_hint_x: .3
+
+    MDLabel:
+        text: root.tag_value
+        markup: True
+
+
+<SongTagDialogContent>:
+    MDScrollView:
+        MDBoxLayout:
+            id: container
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: '5dp'
+            padding: '10dp'

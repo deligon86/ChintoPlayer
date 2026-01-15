@@ -1,3 +1,4 @@
+from core import logger
 from .base import BaseView
 from kivy.metrics import dp
 from kivy.clock import mainthread, Clock
@@ -8,6 +9,7 @@ from kivymd_interface.views.widgets.playlistview_widgets import (
     PlaylistCreateDialogContent
 )
 from .widgets.common import create_dialog, create_alert_dialog
+from ..app_core.actions import SongAction
 
 
 class PlaylistView(BaseView):
@@ -23,6 +25,7 @@ class PlaylistView(BaseView):
         self.view_model.playlist_create_event.connect(self.on_playlist_created)
         self.view_model.playlists_load_event.connect(self.on_playlists_load)
         self.view_model.playlist_create_error_event.connect(self.on_playlist_create_error)
+        self.view_model.playlist_tracks_data.connect(self.on_playlist_load)
         self.create_playlist_dialog = None
 
         # delay the loading
@@ -46,6 +49,17 @@ class PlaylistView(BaseView):
         self.create_playlist_dialog.height = dp(270)
         self.create_playlist_dialog.radius = [dp(10)] * 4
         self.create_playlist_dialog.open()
+
+    def create_song_actions(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+        actions = [
+            SongAction(label="Show tags", callback=self.show_tags,
+                       callback_args=(song_id,))
+        ]
+        return actions
 
     @mainthread
     def on_playlists_load(self, playlists):
@@ -92,6 +106,24 @@ class PlaylistView(BaseView):
         dialog.auto_dismiss = False
         dialog.open()
 
+    @mainthread
+    def on_playlist_load(self, tracks):
+        """
+        :param tracks:
+        :return:
+        """
+        if tracks:
+            for track in tracks:
+                track['actions'] = self.create_song_actions(track.get('song_id'))
+            self.ids.playlist_content.data = tracks
+            logger.info("[PlaylistView] Loaded playlist tracks")
+        else:
+            create_alert_dialog(
+                icon="playlist-music", title="Playlist",
+                description="This action was triggered by playlist loading",
+                message="The playlist you chose is empty! Add songs to get started"
+            ).open()
+
     def playlist_callback(self, playlist_name, playlist_id):
         """
         :param playlist_name:
@@ -99,3 +131,5 @@ class PlaylistView(BaseView):
         :return:
         """
         print("Playlist: ", playlist_name)
+        self.view_model.load_playlist(playlist_id)
+

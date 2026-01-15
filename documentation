@@ -20,8 +20,18 @@
     - Create the playlist button on create playlist - Done
     - Add ability for the repo and library to return error message as it is on playlist create error - Done
     - Add create callbacks on create dialog - Done
-* Implement the menu dropdown for song item widget
+    - Create the playlist button on create playlist - Done
+    - Add ability for the repo and library to return error message as it is on playlist create error - Done
+    - Add create callbacks on create dialog - Done
+* Implement the menu dropdown for song item widget - Done
 * Fix light theme rendering only in sidebar
 
-* Create a custom album list grid container (mvvm-based) - later on after v1.0
+- I create a menu thing for the song item menu but the architecture is tight coupling
+- I will have to remove all the code for that ( rethink the commands.py, providers.py, base.py,
+    songviewmodel.py, songview.py) - Done
 
+* Add the song menu actions for album view
+* Implement album songs loading
+* Implement player status bar
+
+* Create a custom album list grid container (mvvm-based) - later on after v1.0

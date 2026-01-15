@@ -1,5 +1,4 @@
 import threading
-
 from core.event import Event
 from  core.constants.events import LibraryEvent
 
@@ -12,6 +11,14 @@ class SongViewModel:
         self._context = context
         self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
 
+    def add_song_to_playlist(self, song_id, playlist_id):
+        """
+        :param song_id:
+        :param playlist_id:
+        :return:
+        """
+        self._context.get('playlist_manager').add_track_to_playlist(playlist_id, song_id)
+
     def register_load_songs(self, func):
         """
         Register function to transfer songs to
@@ -19,6 +26,9 @@ class SongViewModel:
         :return:
         """
         self.song_data_event.connect(func)
+
+    def request_playlists(self):
+        return self._context.get('playlist_manager').get_playlists()
 
     def on_library_refresh(self, refreshed_data: list):
         """
@@ -45,4 +55,3 @@ class SongViewModel:
             item_data['song_id'] = item.id
             data.append(item_data)
         self.song_data_event.emit(data)
-

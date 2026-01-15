@@ -34,7 +34,13 @@
             RecyclerView:
                 id: playlist_content
                 key_viewclass: 'viewclass'
-                recycler_type: 'boxlayout'
+                MDRecycleBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    spacing: '5dp'
+                    default_size: None, '56dp'
+                    default_size_hint: 1, None
+                    height: self.minimum_height
 
         MDBoxLayout:
             orientation: "vertical"

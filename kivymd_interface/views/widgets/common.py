@@ -1,9 +1,10 @@
+from kivymd.uix.menu import MDDropdownMenu
 
 from core import logger
 from kivy.metrics import dp
-from typing import Callable
+from typing import Callable, List
 from kivy.properties import (
-    StringProperty, OptionProperty, NumericProperty, BooleanProperty, DictProperty
+    StringProperty, OptionProperty, NumericProperty, BooleanProperty, DictProperty, ObjectProperty, ListProperty
 )
 from kivymd.uix.card import MDCard
 from kivy.uix.widget import Widget
@@ -17,6 +18,8 @@ from kivymd_interface.app_core import running_app
 from kivymd.uix.button import MDButtonText, MDButton
 from kivymd.uix.recycleboxlayout import MDRecycleBoxLayout
 from kivymd.uix.recyclegridlayout import MDRecycleGridLayout
+
+from kivymd_interface.app_core.actions import SongAction
 from kivymd_interface.app_core.app_events import ThemeEvent
 from kivy.factory import Factory
 from kivymd.uix.dialog.dialog import (
@@ -146,6 +149,7 @@ class SongTrackItem(MDCard):
     duration_formated = StringProperty()
     is_current = BooleanProperty()
     metadata = DictProperty()
+    actions = ListProperty()
     theme_bg_color = "Custom"
 
     def __init__(self, **kwargs):
@@ -163,6 +167,32 @@ class SongTrackItem(MDCard):
             self.duration_formated = f"{int(mins)}:{int(secs)}"
         else:
             self.duration_formated = "--:--"
+
+    def on_more_pressed(self, caller):
+        """
+        :return:
+        """
+        menu = create_song_menu(self.actions)
+        menu.caller = caller
+        menu.open()
+
+
+# menu
+def create_song_menu(actions: List[SongAction]):
+    """
+    Create a menu
+    :param actions:
+    :return:
+    """
+    menu_items = [
+        {
+            'text': action.label,
+            'on_release': lambda func=action.callback, args=action.callback_args: func(*args)
+        } for action in actions
+    ]
+
+    menu = MDDropdownMenu(items=menu_items)
+    return menu
 
 
 # dialog creation
@@ -217,22 +247,34 @@ def create_dialog(icon: str, title: str, description: str, accept_text: str = ""
             ),
             spacing='8dp'
         ),
-        auto_dismiss=False
+        auto_dismiss=False,
+        radius=[5, 5, 5, 5]
     )
+
+    dialog.radius = [5, 5, 5, 5]
 
     return dialog
 
 
-def create_alert_dialog(icon:str, title: str, description: str, message: str):
+def create_alert_dialog(icon:str, title: str, description: str, message: str = None, cls=None):
     """
     Create an informational dialog
     :param icon:
     :param title:
     :param description:
     :param message:
+    :param cls: content class if any
     :return:
     """
     dialog = None
+    content = None
+    if message:
+        content = MDLabel(text=message, halign='center',
+                          adaptive_height=True
+                          )
+    if cls:
+        content = cls
+
     dialog = MDDialog(
         MDDialogIcon(
             icon=icon
@@ -246,11 +288,7 @@ def create_alert_dialog(icon:str, title: str, description: str, message: str):
         # content
         MDDialogContentContainer(
             MDDivider(),
-            MDLabel(
-                text=message,
-                adaptive_height=True,
-                halign="center"
-            ),
+            content,
             spacing=dp(8),
             orientation="vertical"
         ),

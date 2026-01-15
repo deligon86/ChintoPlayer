@@ -1,7 +1,7 @@
 from kivy.metrics import dp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card.card import MDCard
-from kivy.properties import StringProperty, NumericProperty, ObjectProperty
+from kivy.properties import StringProperty, NumericProperty, ObjectProperty, DictProperty
 from kivy.animation import Animation
 
 from kivymd_interface.views.widgets.common import BaseDialogContent
@@ -55,6 +55,7 @@ class PlaylistButton(MDCard):
         :return:
         """
         self._button_callback = callback
+
 
 class PlaylistContainer(MDBoxLayout):
     animation_mark_duration = NumericProperty(.13)
@@ -115,3 +116,68 @@ class PlaylistCreateDialogContent(BaseDialogContent):
         """
         self.ids.field.text = ""
         self._name = ""
+
+
+class PlaylistSelectionDialogContent(BaseDialogContent):
+    selected_item = DictProperty()  # {'name': playlist name, 'id': playlist id}
+
+    def add_playlist(self, playlist_name, playlist_id):
+        """
+        :param playlist_name:
+        :param playlist_id:
+        :return:
+        """
+        self.ids.container.add_widget(
+            PlaylistSelectionItem(
+                text=playlist_name,
+                playlist_id=playlist_id,
+                callback=self.on_select
+            )
+        )
+
+    def on_select(self, widget, playlist_name, playlist_id):
+        """
+        :param widget
+        :param playlist_name:
+        :param playlist_id:
+        :return:
+        """
+        for child in self.ids.container.children:
+            child.remove_mark()
+
+        widget.mark()
+
+        self.selected_item = {'name': playlist_name, 'id': playlist_id}
+
+    def get_playlist_items(self):
+        """
+        :return:
+        """
+        return [item.text for item in self.ids.container.children]
+
+
+class PlaylistSelectionItem(MDCard):
+    text = StringProperty()
+    playlist_id = StringProperty()
+    callback = ObjectProperty()
+
+    def on_release(self, *args) -> None:
+        if self.callback:
+            self.callback(self, self.text, self.playlist_id)
+
+    def mark(self):
+        """
+        :return:
+        """
+        Animation(opacity=1, width=dp(4), height=self.parent.height * .55,
+                  radius=[dp(2)] * 4, duration=.12).start(self.ids.marker)
+
+
+    def remove_mark(self):
+        """
+        :return:
+        """
+        self.ids.opacity = 0
+        self.height = 0
+        self.width = 0
+        self.radius = [0] * 4
