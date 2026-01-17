@@ -13,6 +13,7 @@ from kivy.lang import Builder
 from kivymd_interface.helpers import resource_path
 from kivymd_interface.app_core.ui_event_bus import UIEventBus
 from kivymd_interface.app_core.app_events import ThemeEvent, UIEvent
+from kivy.core.image import ImageLoader
 
 
 class ReloMusicPlayerApp(MDApp):
@@ -49,7 +50,7 @@ class ReloMusicPlayerApp(MDApp):
         self.app_bus.publish(ThemeEvent.THEME_CHANGED, 'Dark')
 
         # change screen quickly for debugging the current screen that am modifying
-        self.app_bus.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, 'song_view')
+        self.app_bus.publish(UIEvent.SIDEBAR_ACTIVE_VIEW, 'album_view')
 
         return self.main_window
 

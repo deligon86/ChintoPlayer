@@ -1,10 +1,9 @@
 from kivy.metrics import dp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card.card import MDCard
-from kivy.properties import StringProperty, NumericProperty, ObjectProperty, DictProperty
+from kivy.properties import StringProperty, NumericProperty, ObjectProperty, DictProperty, ListProperty
 from kivy.animation import Animation
-
-from kivymd_interface.views.widgets.common import BaseDialogContent
+from kivymd_interface.views.widgets.common import BaseDialogContent, create_action_menu
 
 
 class PlaylistCreateButton(MDCard):
@@ -15,10 +14,20 @@ class PlaylistCreateButton(MDCard):
 class PlaylistButton(MDCard):
     text = StringProperty()
     playlist_id = StringProperty()
+    actions = ListProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._button_callback = None
+
+    def on_more_pressed(self, caller):
+        """
+        :param caller:
+        :return:
+        """
+        menu = create_action_menu(self.actions)
+        menu.caller = caller
+        menu.open()
 
     def on_release(self, *args) -> None:
         """
@@ -181,3 +190,20 @@ class PlaylistSelectionItem(MDCard):
         self.height = 0
         self.width = 0
         self.radius = [0] * 4
+
+
+# playlist rename content
+class PlaylistRenameContent(BaseDialogContent):
+    _name = StringProperty()
+
+    @property
+    def text(self):
+        return self._name or self.ids.field.text
+
+    def on_input(self, text):
+        """
+        on enter pressed
+        :param text:
+        :return:
+        """
+        self._name = text

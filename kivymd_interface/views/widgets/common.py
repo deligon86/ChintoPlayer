@@ -172,13 +172,13 @@ class SongTrackItem(MDCard):
         """
         :return:
         """
-        menu = create_song_menu(self.actions)
+        menu = create_action_menu(self.actions)
         menu.caller = caller
         menu.open()
 
 
 # menu
-def create_song_menu(actions: List[SongAction]):
+def create_action_menu(actions: List[SongAction]):
     """
     Create a menu
     :param actions:

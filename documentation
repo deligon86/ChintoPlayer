@@ -3,17 +3,17 @@
 # Next steps
 * Replace kivymd 1.2.0 with latest 2.0.1 - Done
 * Implement views ( song, album, playlist, settings) mvps - Done
-* Collapsable Side menu Done
-* Shortened labels all-round Done
-* Minimum settings (theme settings only) Done
-* Implement song item widget Done
+* Collapsable Side menu - Done
+* Shortened labels all-round - Done
+* Minimum settings (theme settings only) - Done
+* Implement song item widget - Done
 
 * Library scanning with UI linking
 * Actual data loading - Done
 * Playlist Crud
     - create playlist - Done
     - rename playlist
-    - add songs
+    - add songs - Done
     - remove songs
     - delete playlist
     On progress
@@ -30,8 +30,16 @@
 - I will have to remove all the code for that ( rethink the commands.py, providers.py, base.py,
     songviewmodel.py, songview.py) - Done
 
+# Next batch:
+* Implement Playlist (delete, rename), remove from playlist action - Done
+* Implement album songs loading - Done
 * Add the song menu actions for album view
-* Implement album songs loading
 * Implement player status bar
+* Fix light theme not rendering correctly
+
+# Next batch:
+* Implement playback mechanism
+* Library scanning
+
 
 * Create a custom album list grid container (mvvm-based) - later on after v1.0

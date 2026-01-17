@@ -1,3 +1,5 @@
+from kivymd.uix.label import MDLabel
+
 from core import logger
 from .base import BaseView
 from kivy.metrics import dp
@@ -6,10 +8,10 @@ from kivy.clock import mainthread, Clock
 # playlistview_widgets module
 from kivymd_interface.views.widgets.playlistview_widgets import (
     PlaylistButton, PlaylistContainer, PlaylistCreateButton,
-    PlaylistCreateDialogContent
+    PlaylistCreateDialogContent, PlaylistRenameContent
 )
 from .widgets.common import create_dialog, create_alert_dialog
-from ..app_core.actions import SongAction
+from ..app_core.actions import SongAction, PlaylistAction
 
 
 class PlaylistView(BaseView):
@@ -56,9 +58,22 @@ class PlaylistView(BaseView):
         :return:
         """
         actions = [
-            SongAction(label="Show tags", callback=self.show_tags,
-                       callback_args=(song_id,))
+            SongAction(label="Show tags", callback=self.show_tags, callback_args=(song_id,)),
+            SongAction(label="Remove", callback=self.remove_from_playlist, callback_args=(song_id, ))
         ]
+        return actions
+
+    def create_playlist_actions(self, playlist_id: str, playlist_name: str) -> list:
+        """
+        :param playlist_id:
+        :param playlist_name:
+        :return:
+        """
+        actions = [
+            PlaylistAction(label="Rename", callback=self.rename_playlist, callback_args=(playlist_id, playlist_name)),
+            PlaylistAction(label="Remove", callback=self.remove_playlist, callback_args=(playlist_id, playlist_name))
+        ]
+
         return actions
 
     @mainthread
@@ -72,7 +87,9 @@ class PlaylistView(BaseView):
             button = PlaylistButton(text=playlist.get('name'),
                                     playlist_id=playlist.get('id'),
                                     theme_bg_color="Custom",
-                                    md_bg_color=self.ids.playlist_container.md_bg_color)
+                                    md_bg_color=self.ids.playlist_container.md_bg_color,
+                                    actions=self.create_playlist_actions(playlist_id=playlist.get('id'),
+                                                                         playlist_name=playlist.get('name')))
             button.register_callback(self.ids.playlist_container.on_playlist_press)
             self.ids.playlist_container.add_playlist_button(button)
 
@@ -86,7 +103,9 @@ class PlaylistView(BaseView):
         button = PlaylistButton(text=payload.get('name'),
                                 playlist_id=payload.get('id'),
                                 theme_bg_color="Custom",
-                                md_bg_color=self.ids.playlist_container.md_bg_color)
+                                md_bg_color=self.ids.playlist_container.md_bg_color,
+                                actions=self.create_playlist_actions(playlist_id=payload.get('id'),
+                                                                     playlist_name=payload.get('name')))
         button.register_callback(self.ids.playlist_container.on_playlist_press)
         self.ids.playlist_container.add_playlist_button(button)
 
@@ -124,12 +143,77 @@ class PlaylistView(BaseView):
                 message="The playlist you chose is empty! Add songs to get started"
             ).open()
 
-    def playlist_callback(self, playlist_name, playlist_id):
+    def playlist_open_callback(self, playlist_name, playlist_id):
         """
         :param playlist_name:
         :param playlist_id:
         :return:
         """
-        print("Playlist: ", playlist_name)
         self.view_model.load_playlist(playlist_id)
 
+    # playlist rename
+    def rename_playlist(self, playlist_id: str, playlist_name: str):
+        """
+        :param playlist_id:
+        :param playlist_name:
+        :return:
+        """
+        # open a new dialog and save playlist
+        rename_content_cls = PlaylistRenameContent(size_hint_y=None, height=dp(100))
+        rename_dialog = create_dialog(
+            icon="playlist-edit", title="Rename playlist",
+            description=f"This action will rename the playlist: {playlist_name}!",
+            accept_text="Rename", decline_text="Cancel",
+            accept_callback=lambda _: self.on_rename_playlist(playlist_id, rename_content_cls)
+        )
+        rename_dialog.open()
+
+    def on_rename_playlist(self, playlist_id: str, content_cls: PlaylistRenameContent):
+        """
+        Do rename
+        :param playlist_id:
+        :param content_cls:
+        :return:
+        """
+        if content_cls.text:
+            self.view_model.rename_playlist(playlist_id, content_cls.text)
+        else:
+            # no name provided, cannot do a rename with an empty string
+            create_alert_dialog(
+                icon="playlist-edit", title="Rename playlist",
+                description="An error occurred while renaming the playlist",
+                message="The playlist name cannot be empty, provide a name to continue."
+            ).open()
+
+    # remove playlist
+    def remove_playlist(self, playlist_id: str, playlist_name: str):
+        """
+        :param playlist_id:
+        :param playlist_name:
+        :return:
+        """
+        # create a confirmation for deletion as the action may be accidental
+        confirm_dialog = create_dialog(
+            icon="playlist-edit", title="Delete Playlist",
+            description=f"This action will delete the playlist below!",
+            custom_cls=MDLabel(text=playlist_name, halign="center", adaptive_height=True),
+            accept_text="Delete", decline_text="Cancel",
+            accept_callback=lambda _: self.on_remove_playlist(playlist_id)
+        )
+        confirm_dialog.open()
+
+    def on_remove_playlist(self, playlist_id: str):
+        """
+        :param playlist_id:
+        :return:
+        """
+        # user has confirmed delete, so delete
+        self.view_model.remove_playlist(playlist_id)
+
+    # remove track from playlist
+    def remove_from_playlist(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+        self.view_model.remove_track_from_playlist(song_id)

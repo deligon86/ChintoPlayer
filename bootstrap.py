@@ -2,6 +2,7 @@ import os
 from adapters.media_scanner import MediaScanner
 from adapters.audio_engine_service import AudioEngineService
 from adapters.music_repository import MusicRepository
+from adapters.thumbnail_service import ThumbnailService
 from core.constants.events import MediaScannerEvent, LibraryEvent, PlaybackEngineEvent
 from core.event_bus import EventBus
 from core.event_debugger import EventDebugger
@@ -54,6 +55,9 @@ def bootstrap():
     scanner = MediaScanner(bus, scheduler=scheduler)
     audio_engine = AudioEngineService(bus)
 
+    # service
+    thumbnail_service = ThumbnailService(repo=repo, event_bus=bus, )
+
     print("Init bootstrap")
 
     return {
@@ -64,7 +68,8 @@ def bootstrap():
         "scheduler": scheduler,
         "library": library_manager,
         "audio_service": audio_engine,
-        'playlist_manager': playlist_manager
+        'playlist_manager': playlist_manager,
+        "thumbnail_service": thumbnail_service
     }
 
 

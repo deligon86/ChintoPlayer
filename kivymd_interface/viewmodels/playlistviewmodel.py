@@ -82,3 +82,30 @@ class PlaylistViewModel:
             data.append(track_data)
         self.playlist_tracks_data.emit(data)
 
+    def remove_track_from_playlist(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+        self._context.get('playlist_manager').remove_track_from_playlist(self.active_playlist.id, song_id)
+        # refresh
+        self.load_playlist(self.active_playlist.id)
+
+    # playlist rename
+    def rename_playlist(self, playlist_id: str, new_name: str):
+        """
+        Updates the playlist name
+        :param playlist_id:
+        :param new_name:
+        :return:
+        """
+
+        self._context.get('playlist_manager').rename_playlist(playlist_id, new_name)
+
+    def remove_playlist(self, playlist_id: str):
+        """
+        Remove playlist
+        :param playlist_id:
+        :return:
+        """
+        self._context.get('playlist_manager').delete_playlist(playlist_id)

@@ -1,8 +1,6 @@
-from examples.image_gen import height
 from kivy.clock import mainthread
 from kivy.core.window import Window
 from kivy.metrics import dp
-
 from kivymd_interface.app_core.actions import SongAction
 from kivymd_interface.views.base import BaseView
 from kivymd_interface.views.widgets.common import SongTrackItem, create_dialog, create_alert_dialog

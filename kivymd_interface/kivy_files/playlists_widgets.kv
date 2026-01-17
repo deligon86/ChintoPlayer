@@ -34,6 +34,12 @@
     MDLabel:
         text: root.text
 
+    MDBoxLayout:
+        adaptive_width: True
+        MDIconButton:
+            icon: 'dots-vertical'
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
 
 <PlaylistContainer>:
     MDScrollView:
@@ -81,3 +87,12 @@
 
     MDLabel:
         text: root.text
+
+
+<PlaylistRenameContent>:
+    padding: '5dp'
+    MDTextField:
+        id: field
+        on_text_validate: root.on_input(self.text)
+        MDTextFieldHintText:
+            text: 'New name'

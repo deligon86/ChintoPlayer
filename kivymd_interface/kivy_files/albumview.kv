@@ -25,7 +25,7 @@
                             padding: '5dp'
 
         MDScreen:
-            name: 'albums'
+            name: 'album'
             MDBoxLayout:
                 orientation: 'vertical'
                 MDBoxLayout:
@@ -40,20 +40,39 @@
                         FitImage:
                             id: album_cover
                             pos_hint: {'center_x': .5, 'center_y': .5}
+
                     MDBoxLayout:
                         # details
                         orientation: 'vertical'
-                        MDLabel:
-                            id: album_name
-                            font_size: '26sp'
-                            theme_font_size: 'Custom'
-                        MDLabel:
-                            id: album_songs_count
-                        MDLabel:
-                            id: album_duration
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            spacing: '5dp'
+                            MDLabel:
+                                id: album_name
+                                font_style: 'Headline'
+                                bold: True
+                            MDLabel:
+                                id: album_songs_count
+                                markup: True
+                            MDLabel:
+                                id: album_duration
+                                markup: True
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: '56dp'
 
                 RecyclerView:
                     id: album_content
+                    key_viewclass: 'viewclass'
+                    MDRecycleBoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        spacing: '5dp'
+                        default_size: None, '56dp'
+                        default_size_hint: 1, None
+                        height: self.minimum_height
+
 
 <AlbumsItem>:
     orientation: 'vertical'

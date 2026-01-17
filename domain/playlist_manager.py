@@ -94,3 +94,18 @@ class PlaylistManager:
         :return:
         """
         self._repo.remove_track_from_container(playlist_id, track_id, position)
+
+    def rename_playlist(self, playlist_id: str, name: str):
+        """
+        :param playlist_id:
+        :param name:
+        :return:
+        """
+        self._repo.rename_container(playlist_id, name)
+
+    def delete_playlist(self, playlist_id: str):
+        """
+        :param playlist_id:
+        :return:
+        """
+        self._repo.remove_container(playlist_id)

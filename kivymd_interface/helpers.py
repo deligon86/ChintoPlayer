@@ -1,9 +1,10 @@
 import sys
 import os
 import string
-from kivy.core.image import Image
+from PIL import Image
 from io import BytesIO
 from kivymd.app import MDApp
+from kivy.core.image import Image as KivyImage
 
 
 # string formatter
@@ -19,6 +20,19 @@ def clean_string(text: str, omit:list = None):
     return text.translate(transformer)
 
 
+def format_duration(duration: int | float):
+    """
+    :param duration:
+    :return:
+    """
+    hh, mm = divmod(duration, 60)
+    mm, ss = divmod(mm, 60)
+    if hh > 0:
+        return f"{hh}:{mm}:{ss}"
+    else:
+        return f"{mm}:{ss}"
+
+
 def running_app():
     """
     Gets the active application
@@ -27,15 +41,17 @@ def running_app():
     return MDApp.get_running_app()
 
 
-def load_kivy_image_from_data(image_data, ext=".png"):
+def load_kivy_image_from_data(image_data, ext="png"):
     """
     Loads image from bytes
     :param image_data:
     :param ext:
     :return:
     """
-    data = BytesIO(image_data)
-    core_image = Image(data, ext=ext)
+    #image = Image.open(BytesIO(image_data))
+    #out_buffer = BytesIO()
+    #image.save(out_buffer, format=ext.upper(), quality=85, optimize=True)
+    core_image = KivyImage(BytesIO(image_data), ext=ext)
 
     return core_image
 

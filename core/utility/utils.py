@@ -1,7 +1,9 @@
+import pathlib
+
 from PIL import Image
 from io import BytesIO
 import os
-
+from kivy.uix.image import Image as KivyImage
 
 
 def convert_to_jpeg(image_data):
@@ -25,16 +27,17 @@ def load_default_image(target_size=(600, 600), downsample=False, image_path="ass
     working_env = os.environ.get('WORKING_DIR')
     path = os.path.join(working_env, image_path)
     image = Image.open(path)
+    ext = pathlib.Path(path).name.split('.')[-1]
 
     if image.mode in ('RGBA', 'P'):
         image = image.convert('RGB')
 
     if not downsample:
         out_buffer = BytesIO()
-        image.save(out_buffer, format="PNG", quality=85, optimize=True)
-        return out_buffer.getvalue()
+        image.save(out_buffer, format=ext.upper(), quality=85, optimize=True)
+        return KivyImage(out_buffer, ext=ext)
 
     image.thumbnail(target_size, Image.Resampling.LANCZOS)
     out_buffer = BytesIO()
-    image.save(out_buffer, format="JPEG", quality=85, optimize=True)
-    return out_buffer.getvalue()
+    image.save(out_buffer, format=ext.upper(), quality=85, optimize=True)
+    return KivyImage(out_buffer, ext=ext)

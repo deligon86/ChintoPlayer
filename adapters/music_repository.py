@@ -144,6 +144,9 @@ class MusicRepository:
         """
         Fetches all tracks belonging to a specific album.
         Used when the user clicks an album card to 'Open' it.
+        :param album_name:
+        :param artist_name:
+        :return:
         """
         query = "SELECT * FROM tracks WHERE album = ? AND artist = ? ORDER BY id"
         with self._get_connection() as conn:
@@ -437,6 +440,25 @@ class MusicRepository:
                 return [{'id': row[0], 'name': row[1]} for row in rows]
             else:
                 return None
+
+    def rename_container(self, container_id, name):
+        """
+        :param container_id:
+        :param name:
+        :return:
+        """
+        query = "UPDATE container SET name = ? WHERE id = ?"
+        with self._get_connection() as conn:
+            conn.execute(query, (container_id, name))
+
+    def remove_container(self, container_id):
+        """
+        :param container_id:
+        :return:
+        """
+        query = "DELETE container WHERE id = ?"
+        with self._get_connection() as conn:
+            conn.execute(query, (container_id, ))
 
     def get_thumbnail_blob(self, track_id: str) -> Optional[bytes]:
         """

@@ -77,6 +77,11 @@ class LibraryManager:
         return self.repo.get_albums()
 
     def get_tracks_by_album(self, album, artist):
+        """
+        :param album:
+        :param artist:
+        :return:
+        """
         return self.repo.get_tracks_by_album(album, artist)
 
     def get_queue_manager_context(self) -> BaseItemContainer:
