@@ -2,6 +2,7 @@ from kivy.clock import mainthread
 from kivy.core.window import Window
 from kivy.metrics import dp
 from kivymd_interface.app_core.actions import SongAction
+from kivymd_interface.viewmodels.songviewmodel import SongViewModel
 from kivymd_interface.views.base import BaseView
 from kivymd_interface.views.widgets.common import SongTrackItem, create_dialog, create_alert_dialog
 from kivymd_interface.views.widgets.playlistview_widgets import PlaylistSelectionDialogContent
@@ -9,7 +10,7 @@ from kivymd_interface.views.widgets.playlistview_widgets import PlaylistSelectio
 
 class SongView(BaseView):
 
-    def __init__(self, view_model, context, **kwargs):
+    def __init__(self, view_model: SongViewModel, context, **kwargs):
         super().__init__(context, **kwargs)
         self._view_model = view_model
         self._view_model.register_load_songs(self._load_song_library)
@@ -44,15 +45,23 @@ class SongView(BaseView):
                 message="You haven't created any playlist!"
             ).open()
 
-    def on_add_to_playlist(self, song_id, container: PlaylistSelectionDialogContent):
+    def on_add_to_playlist(self, song_id: str, content_cls: PlaylistSelectionDialogContent):
         """
         :param song_id:
-        :param container:
+        :param content_cls:
         :return:
         """
-        print("[+] Selected playlist: ", container.selected_item.get('name'))
+        # print("[+] Selected playlist: ", container.selected_item.get('name'))
         # wire to view model
-        self._view_model.add_song_to_playlist(song_id, container.selected_item.get('id'))
+        playlist_id = content_cls.selected_item.get('id')
+        if playlist_id:
+            self._view_model.add_song_to_playlist(song_id, playlist_id)
+        else:
+            create_alert_dialog(
+                icon="playlist-music", title="Add to playlist",
+                description="An unexpected error occurred while adding track to playlist",
+                message="You can't do that! Select the playlist to continue!"
+            ).open()
 
     def create_song_actions(self, song_id) -> list:
         actions = [

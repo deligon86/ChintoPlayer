@@ -13,7 +13,6 @@ from kivy.lang import Builder
 from kivymd_interface.helpers import resource_path
 from kivymd_interface.app_core.ui_event_bus import UIEventBus
 from kivymd_interface.app_core.app_events import ThemeEvent, UIEvent
-from kivy.core.image import ImageLoader
 
 
 class ReloMusicPlayerApp(MDApp):
@@ -59,7 +58,7 @@ class ReloMusicPlayerApp(MDApp):
         :return:
         """
         # give more room for more event subscription
-        Clock.schedule_once(self.schedule_events, 1)  # after 10 secs
+        Clock.schedule_once(self.schedule_events, 3)  # after 10 secs
 
     def schedule_events(self, *args):
         # load library

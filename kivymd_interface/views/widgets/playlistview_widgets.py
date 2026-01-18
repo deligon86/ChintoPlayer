@@ -186,10 +186,10 @@ class PlaylistSelectionItem(MDCard):
         """
         :return:
         """
-        self.ids.opacity = 0
-        self.height = 0
-        self.width = 0
-        self.radius = [0] * 4
+        self.ids.marker.opacity = 0
+        self.ids.marker.height = 0
+        self.ids.marker.width = 0
+        self.ids.marker.radius = [0] * 4
 
 
 # playlist rename content

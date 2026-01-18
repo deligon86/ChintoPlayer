@@ -63,7 +63,6 @@ class PlaylistViewModel:
         playlist = self._context.get('playlist_manager').get_playlist(playlist_id)
         if playlist:
             self.active_playlist = playlist
-
             threading.Thread(target=self._prepare_playlist_tracks, args=(playlist.items, ), daemon=True).start()
         else:
             self.playlist_tracks_data.emit([])

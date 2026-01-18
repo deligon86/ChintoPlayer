@@ -17,7 +17,7 @@ class SongViewModel:
         :param playlist_id:
         :return:
         """
-        self._context.get('playlist_manager').add_track_to_playlist(playlist_id, song_id)
+        self._context.get('playlist_manager').add_track_to_playlist(playlist_id=playlist_id, track=song_id)
 
     def register_load_songs(self, func):
         """

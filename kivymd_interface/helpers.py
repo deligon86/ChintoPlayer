@@ -25,12 +25,13 @@ def format_duration(duration: int | float):
     :param duration:
     :return:
     """
-    hh, mm = divmod(duration, 60)
-    mm, ss = divmod(mm, 60)
-    if hh > 0:
-        return f"{hh}:{mm}:{ss}"
+    if duration > 216000: # 1 hour
+        hh, mm = divmod(duration, 60)
+        mm, ss = divmod(mm, 60)
+        return f"{int(hh)}:{int(mm)}:{int(ss)}"
     else:
-        return f"{mm}:{ss}"
+        mm, ss = divmod(duration, 60)
+        return f"{int(mm)}:{int(ss)}"
 
 
 def running_app():
@@ -48,9 +49,9 @@ def load_kivy_image_from_data(image_data, ext="png"):
     :param ext:
     :return:
     """
-    #image = Image.open(BytesIO(image_data))
-    #out_buffer = BytesIO()
-    #image.save(out_buffer, format=ext.upper(), quality=85, optimize=True)
+    image = Image.open(BytesIO(image_data))
+    out_buffer = BytesIO()
+    image.save(out_buffer, format=ext.upper(), quality=85, optimize=True)
     core_image = KivyImage(BytesIO(image_data), ext=ext)
 
     return core_image
@@ -60,6 +61,7 @@ def _is_frozen() -> bool:
     """Check if the application is running as a 'frozen' executable (e.g., PyInstaller, cx_Freeze)."""
     # PyInstaller, cx_Freeze, and others set the 'frozen' attribute on the sys module.
     return getattr(sys, 'frozen', False)
+
 
 def get_resource_base_path() -> str:
     """

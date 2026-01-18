@@ -31,15 +31,18 @@
                 MDBoxLayout:
                     # banner
                     size_hint_y: .6
+                    spacing: '5dp'
                     MDFloatLayout:
-                        size_hint_x: .6
-                        MDIconButton:
-                            icon: 'chevron-left'
-                            on_release: view_mgr.current = 'albums_list'
-                            pos_hint: {'center_x': .1, 'center_y': .9}
+                        size_hint_x: .5
                         FitImage:
                             id: album_cover
                             pos_hint: {'center_x': .5, 'center_y': .5}
+                        MDIconButton:
+                            icon: 'chevron-left'
+                            theme_icon_color: 'Custom'
+                            icon_color: self.theme_cls.tertiaryColor
+                            on_release: view_mgr.current = 'albums_list'
+                            pos_hint: {'center_x': .1, 'center_y': .9}
 
                     MDBoxLayout:
                         # details
@@ -47,6 +50,7 @@
                         MDBoxLayout:
                             orientation: 'vertical'
                             spacing: '5dp'
+                            padding: '5dp'
                             MDLabel:
                                 id: album_name
                                 font_style: 'Headline'
@@ -69,6 +73,7 @@
                         orientation: 'vertical'
                         size_hint_y: None
                         spacing: '5dp'
+                        padding: '10dp'
                         default_size: None, '56dp'
                         default_size_hint: 1, None
                         height: self.minimum_height

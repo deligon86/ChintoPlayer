@@ -12,10 +12,10 @@
 * Actual data loading - Done
 * Playlist Crud
     - create playlist - Done
-    - rename playlist
+    - rename playlist - Done
     - add songs - Done
-    - remove songs
-    - delete playlist
+    - remove songs - Done
+    - delete playlist - Done
     On progress
     - Create the playlist button on create playlist - Done
     - Add ability for the repo and library to return error message as it is on playlist create error - Done
