@@ -14,6 +14,14 @@ class AlbumViewModel:
         self._context = context
         self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
 
+    def add_song_to_playlist(self, song_id: str, playlist_id: str):
+        """
+        :param song_id:
+        :param playlist_id:
+        :return:
+        """
+        self._context.get('playlist_manager').add_track_to_playlist(playlist_id=playlist_id, track=song_id)
+
     def register_load_albums(self, func):
         """
         Register the function to emit albums to
@@ -21,6 +29,9 @@ class AlbumViewModel:
         :return:
         """
         self.album_data_event.connect(func)
+
+    def request_playlists(self):
+        return self._context.get('playlist_manager').get_playlists()
 
     def on_library_ready(self, ready):
         """
