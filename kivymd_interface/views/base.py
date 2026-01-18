@@ -3,6 +3,7 @@ from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.screen import MDScreen
 from kivymd_interface.views.widgets.common import BaseDialogContent, create_alert_dialog
+from kivymd_interface.views.widgets.playlistview_widgets import PlaylistSelectionDialogContent
 
 
 class TagItem(MDBoxLayout):
@@ -48,6 +49,12 @@ class BaseView(MDScreen):
         super().__init__(**kwargs)
         self.context = context
 
+    def add_to_playlist(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+
     def create_song_actions(self, song_id: str):
         """
         :param song_id:
@@ -73,3 +80,10 @@ class BaseView(MDScreen):
             cls=content_cls
         )
         dialog.open()
+
+    def on_add_to_playlist(self, song_id: str, content_cls: PlaylistSelectionDialogContent):
+        """
+        :param song_id:
+        :param content_cls:
+        :return:
+        """
