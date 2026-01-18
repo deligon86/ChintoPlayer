@@ -113,7 +113,7 @@ class CoreEngine:
         :return:
         """
         with self.lock:
-            return True if self._end_event == 0 else False
+            return True if self._map_event(self._end_event) == "play" else False
 
     def load_file(self, path, channel:int=None):
         """
@@ -143,14 +143,13 @@ class CoreEngine:
         if self.do_not_play:
             err = [AudioEngineError.PLAYBACK_ERROR, self.last_error()]
             self.add_error(err)
+            return None
 
-            return
-
-        if not self.is_playing():
+        if self.is_playing():
             self.shutdown()
 
-            # Start audio processing and streaming
-            self.start_stream()
+        # Start audio processing and streaming
+        self.start_stream()
 
         # Activate playback
         with self.lock:
@@ -169,6 +168,7 @@ class CoreEngine:
                     channel.add_effects(self.effects)
                     channel.playing = True
             self._set_end_event(0)
+        return True
 
     def start_stream(self):
         if self.output_stream:

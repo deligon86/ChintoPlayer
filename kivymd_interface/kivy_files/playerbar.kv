@@ -1,0 +1,79 @@
+<DefaultPlayerBar>:
+    padding: '5dp'
+    radius: [5]*4
+    spacing: '2dp'
+    MDBoxLayout:
+        size_hint: None, None
+        height: root.height * .9
+        width: root.height * .9
+        FitImage:
+            id: art
+            radius: root.radius
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDBoxLayout:
+            size_hint_y: None
+            height: '20dp'
+            MDSlider:
+                id: progress
+                MDSliderHandle:
+                MDSliderValueLabel:
+
+        MDBoxLayout:
+            padding: '10dp'
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDLabel:
+                    id: song_name
+                MDLabel:
+                    id: artist_name
+                    size_hint_y: .3
+                    theme_text_color: 'Secondary'
+
+            MDBoxLayout:
+                MDIconButton:
+                    icon: 'repeat-off'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+                MDIconButton:
+                    icon: 'skip-previous-outline'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    on_release: root.dispatch_command({'cmd': 'skip-previous', 'args': None, 'instance': self})
+                MDIconButton:
+                    icon: 'play-circle'
+                    icon_size: '32sp'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    on_release: root.dispatch_command({'cmd': 'play', 'args': None, 'instance': self})
+
+                MDIconButton:
+                    icon: 'skip-next-outline'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    on_release: root.dispatch_command({'cmd': 'skip-next', 'args': None, 'instance': self})
+
+                MDIconButton:
+                    icon: 'shuffle-disabled'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+            MDBoxLayout:
+                size_hint_x: None
+                width: '150dp'
+                MDIconButton:
+                    icon: 'volume-medium'
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    on_release: root.volume_press(self)
+                MDBoxLayout:
+                    MDSlider:
+                        step: 2
+                        max: 120
+                        min: 0
+                        on_value: root.on_volume(self, self.value)
+                        MDSliderHandle:
+                        MDSliderValueLabel:
+
+            MDBoxLayout:
+                adaptive_width: True
+                MDIconButton:
+                    icon: 'dots-vertical'
+                    pos_hint: {'center_x': .5, 'center_y': .5}

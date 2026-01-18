@@ -23,16 +23,19 @@ class MusicRepository:
                 CREATE TABLE IF NOT EXISTS tracks (
                     id TEXT PRIMARY KEY,
                     title TEXT, artist TEXT, album TEXT,
-                    duration INTEGER, file_path TEXT UNIQUE, thumbnail BLOB,
+                    duration INTEGER, file_path TEXT NOT NULL UNIQUE, thumbnail BLOB,
                     genre TEXT, year TEXT, 
                     play_count INTEGER DEFAULT 0,
                     metadata TEXT,
+                    last_played DATETIME,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
                 -- INDEXES for O(log n) search and sort speed
                 CREATE INDEX IF NOT EXISTS idx_track_search ON tracks(title, artist, album);
                 CREATE INDEX IF NOT EXISTS idx_track_date ON tracks(created_at);
+                CREATE INDEX IF NOT EXISTS idx_playback_stats ON tracks(last_played, play_count);
+                CREATE INDEX IF NOT EXISTS idx_path ON tracks(file_path);
 
                 CREATE TABLE IF NOT EXISTS containers (
                     id TEXT PRIMARY KEY, name TEXT UNIQUE, type TEXT, created_at TEXT
@@ -450,6 +453,7 @@ class MusicRepository:
         query = "UPDATE container SET name = ? WHERE id = ?"
         with self._get_connection() as conn:
             conn.execute(query, (container_id, name))
+            conn.commit()
 
     def remove_container(self, container_id):
         """
@@ -459,6 +463,7 @@ class MusicRepository:
         query = "DELETE container WHERE id = ?"
         with self._get_connection() as conn:
             conn.execute(query, (container_id, ))
+            conn.commit()
 
     def get_thumbnail_blob(self, track_id: str) -> Optional[bytes]:
         """
@@ -473,3 +478,35 @@ class MusicRepository:
                 return row[0]
             return None
 
+    def increment_play_count(self, track_id: str):
+        """
+        :param track_id:
+        :return:
+        """
+        query = """
+        UPDATE tracks
+        SET
+            play_count = play_count + 1,
+            last_played = datetime('now')
+        WHERE id = ?
+        """
+        with self._get_connection() as conn:
+            conn.execute(query, (track_id, ))
+            conn.commit()
+
+    # most played
+    def get_most_played_this_month(self, limit: int = 50):
+        """
+        :param limit:
+        :return:
+        """
+        query = """
+        SELECT * FROM tracks
+        WHERE last_played >= date('now', '-30 days')
+        AND play_count > 0
+        ORDER BY play_count DESC, last_played DESC
+        LIMIT ?
+        """
+        with self._get_connection() as conn:
+            cursor = conn.execute(query, (limit, ))
+            return [self._map_row_to_track(row) for row in cursor.fetchall()]

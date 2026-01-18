@@ -53,25 +53,25 @@ class LibraryManager:
         self.bus.publish(LibraryEvent.LIBRARY_READY, True)
         self.bus.publish(LibraryEvent.LIBRARY_REFRESHED, tracks)
 
-    def _on_track_finished(self, track_id: str):
+    def _on_track_finished(self, track: Track):
         """
         Handles the '30-second rule' and increments stats.
-        :param track_id:
+        :param track:
         """
         now = datetime.now()
 
         # Prevent duplicate increments for the same song in a short window
-        if track_id in self._last_play_time:
-            delta = (now - self._last_play_time[track_id]).total_seconds()
+        if track.id in self._last_play_time:
+            delta = (now - self._last_play_time[track.id]).total_seconds()
             if delta < 30:
                 return
 
         # Update Persistence
-        self.repo.increment_play_count(track_id)
-        self._last_play_time[track_id] = now
+        self.repo.increment_play_count(track.id)
+        self._last_play_time[track.id] = now
 
         # Publish specific stat update for the UI 'Plays' column
-        self.bus.publish(LibraryEvent.LIBRARY_STAT_UPDATED, track_id)
+        self.bus.publish(LibraryEvent.LIBRARY_STAT_UPDATED, track.id)
 
     def get_albums(self):
         return self.repo.get_albums()

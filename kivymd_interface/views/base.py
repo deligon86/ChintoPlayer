@@ -87,3 +87,10 @@ class BaseView(MDScreen):
         :param content_cls:
         :return:
         """
+
+    def on_song_click(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+

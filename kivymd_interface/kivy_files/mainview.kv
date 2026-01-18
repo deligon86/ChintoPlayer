@@ -4,7 +4,13 @@
             id: side_bar
             size_hint_x: None
             open_state: 'close'
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: '8dp'
+            MDScreenManager:
+                id: mgr
 
-        MDScreenManager:
-            id: mgr
-            padding: '10dp'
+            PlayerBarContainer:
+                id: bar_container
+                size_hint_y: None
+                height: '0dp'

@@ -1,11 +1,13 @@
 import random
 from typing import List, Optional, Deque
 from collections import deque
+
+from core import logger
 from domain.models.base import BaseItemContainer
 from domain.models.song import Track, TrackItem
 from domain.enums.playback import RepeatMode
 from core.event_bus import EventBus
-from core.constants.events import QueueEvent, PlaybackCommandEvent
+from core.constants.events import QueueEvent, PlaybackCommandEvent, PlaybackEngineEvent
 
 
 class QueueManager:
@@ -21,6 +23,9 @@ class QueueManager:
         # Settings
         self.repeat_mode = RepeatMode.OFF
         self.is_shuffle = False
+
+        # listen to playback completion
+        self._bus.subscribe(PlaybackEngineEvent.PLAYBACK_COMPLETED, self.on_playback_complete)
 
     #Loading and enqueuing
     def load_container(self, container: BaseItemContainer, start_index: int = 0):
@@ -139,6 +144,15 @@ class QueueManager:
         self._history = updated_history
 
         self._bus.publish(QueueEvent.QUEUE_UPDATED, self._active_container)
+
+    # when playback is complete
+    def on_playback_complete(self, track_id):
+        """
+        :param track_id:
+        :return:
+        """
+        logger.info(f"[QUEUE MANAGER] Active container: {self._active_container.name}, Loading next song")
+        self.next()
 
     # Navigation logic
     def next(self):

@@ -20,6 +20,7 @@ class PlaybackEngineEvent(EventType):
     PLAYBACK_PROGRESS = "playback.progress"  # Data: dict {"elapsed": float, "total": float}
     PLAYBACK_LOAD_ERROR = "playback.load.error" # Data : str
     PLAYBACK_ENQUEUE_ERROR = "playback.enqueue.error" # Data: str
+    PLAYBACK_ENGINE_VOLUME = "playback.engine.volume"  # Data: int volume
     KILL = "engine.kill" # Data int exit code
 
 

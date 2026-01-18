@@ -80,6 +80,14 @@ class SongView(BaseView):
         for item in song_data:
             item['md_bg_color'] = self.md_bg_color
             item['actions'] = self.create_song_actions(item.get('song_id'))
+            item['play_callback'] = self.on_song_click
 
         self.ids.song_container.data.extend(song_data)
         self.ids.song_container.refresh_from_data()
+
+    def on_song_click(self, song_id: str):
+        """
+        :param song_id:
+        :return:
+        """
+        self._view_model.start_playback(song_id)

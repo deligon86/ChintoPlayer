@@ -1,6 +1,7 @@
 from kivy.properties import ObjectProperty
 
 from core import logger
+from kivymd_interface.viewmodels.playerbar_viewmodel import PlayerBarViewModel
 from kivymd_interface.views.base import BaseView
 from kivymd_interface.views.songview import SongView
 from kivymd_interface.views.homeview import HomeView
@@ -15,6 +16,10 @@ from kivymd_interface.viewmodels.playlistviewmodel import PlaylistViewModel
 from kivymd_interface.views.widgets.mainview_side_bar import (
     MainViewSideBar, MainViewSideBarItem
 )
+from kivymd_interface.views.widgets.playerbar import (
+    DefaultPlayerBar, BAR_DEFINATION
+)
+
 
 class MainView(BaseView):
     song_view = ObjectProperty(SongView)
@@ -28,6 +33,8 @@ class MainView(BaseView):
 
         self.initialize_views()
         self.context.get('app_bus').subscribe(UIEvent.SIDEBAR_ACTIVE_VIEW, self.change_screen)
+        self._player_bar_view_model = PlayerBarViewModel(context=context)
+        self.set_bar_style()
 
     def initialize_views(self):
         """
@@ -62,3 +69,12 @@ class MainView(BaseView):
         except:
             logger.warning(f"[Navigation] Error setting view, invalid view: {name}")
 
+    def set_bar_style(self, style="default"):
+        """
+        :param style:
+        :return:
+        """
+        match style.lower():
+            case 'default':
+                bar = DefaultPlayerBar(bar_view_model=self._player_bar_view_model)
+                self.ids.bar_container.set_bar(bar, height=BAR_DEFINATION.get(style))

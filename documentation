@@ -33,12 +33,17 @@
 # Next batch:
 * Implement Playlist (delete, rename), remove from playlist action - Done
 * Implement album songs loading - Done
-* Add the song menu actions for album view
+* Add the song menu actions for album view - Done
 * Implement player status bar
 * Fix light theme not rendering correctly
 
 # Next batch:
-* Implement playback mechanism
+*Implement playback mechanism with UI
+    - Ensure every playback gets in queue
+    - Handle queue events well
+    - Add volume support
+    - Add repeat, shuffle support
+
 * Library scanning
 
 

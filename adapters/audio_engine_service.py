@@ -1,11 +1,15 @@
-from typing import AnyStr, List
-
-from adapters.audio_engine.errors import AudioEngineError
+from enum import Enum
 from core import logger
 from core.event_bus import EventBus
 from domain.models.song import Track
 from .audio_engine.core.engine import CoreEngine
+from adapters.audio_engine.errors import AudioEngineError
 from core.constants.events import PlaybackEngineEvent, PlaybackCommandEvent
+
+
+class AudioServiceState(Enum):
+    ACTIVE = "active"
+    DORMANT = "dormant"
 
 
 class AudioEngineService:
@@ -33,6 +37,10 @@ class AudioEngineService:
         self.bus.subscribe(PlaybackCommandEvent.PLAYBACK_STOP, lambda _: self.__engine.stop())
         self.bus.subscribe(PlaybackEngineEvent.KILL, self.receive_engine_termination)
 
+    @property
+    def state(self):
+        return AudioServiceState.ACTIVE if self.__engine.is_playing() else AudioServiceState.DORMANT
+
     def handle_error_event(self, error: list):
         """
         Handle errors
@@ -53,7 +61,7 @@ class AudioEngineService:
         :param event:
         :return:
         """
-        self.bus.publish(PlaybackEngineEvent.PLAYBACK_COMPLETED, )
+        self.bus.publish(PlaybackEngineEvent.PLAYBACK_COMPLETED, self._current_track)
 
     def handle_playback_events(self, event:str):
         """
@@ -90,6 +98,8 @@ class AudioEngineService:
         self.__engine.load_file(track.file_path)
         # start playback
         self.__engine.play()
+        if self.__engine.is_playing():
+            self.bus.publish(PlaybackEngineEvent.PLAYBACK_STARTED, track)
         # events will update automatically
         logger.info(f"[AudioService] Start playback")
 

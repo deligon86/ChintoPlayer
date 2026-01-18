@@ -1,6 +1,6 @@
 import threading
 from core.event import Event
-from  core.constants.events import LibraryEvent
+from core.constants.events import LibraryEvent, PlaybackCommandEvent
 
 
 class SongViewModel:
@@ -55,3 +55,15 @@ class SongViewModel:
             item_data['song_id'] = item.id
             data.append(item_data)
         self.song_data_event.emit(data)
+
+    def start_playback(self, song_id):
+        """
+        Start playback
+        :param song_id:
+        :return:
+        """
+        # Create a playback queue container
+        track = self._context.get('library').get_song_by_id(song_id)
+        container = self._context.get('library').get_queue_manager_context()
+        self._context.get('queue_manager').load_continer(container=container, start_index=container.get_index(track))
+

@@ -151,7 +151,7 @@ class SongTrackItem(MDCard):
     metadata = DictProperty()
     actions = ListProperty()
     theme_bg_color = "Custom"
-
+    play_callback = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(duration=self._format_duration)
@@ -167,6 +167,14 @@ class SongTrackItem(MDCard):
             self.duration_formated = f"{int(mins)}:{int(secs)}"
         else:
             self.duration_formated = "--:--"
+
+    def on_release(self, *args) -> None:
+        """
+        :param args:
+        :return:
+        """
+        if self.play_callback:
+            self.play_callback(self.song_id)
 
     def on_more_pressed(self, caller):
         """

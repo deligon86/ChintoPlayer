@@ -12,7 +12,7 @@ class AlbumViewModel:
 
     def __init__(self, context):
         self._context = context
-        self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
+        #self._context.get('bus').subscribe(LibraryEvent.LIBRARY_READY, self.on_library_ready)
 
     def add_song_to_playlist(self, song_id: str, playlist_id: str):
         """

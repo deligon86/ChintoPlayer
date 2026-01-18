@@ -48,6 +48,7 @@ class DefaultEvent:
                 slot(*args, **kwargs)
             except Exception as e:
                 logger.warning(f"Priority Slot Error: {e}")
+                raise e
 
 
 class ThrottledDefaultEvent(DefaultEvent):
