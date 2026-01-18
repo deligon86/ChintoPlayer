@@ -41,7 +41,9 @@
                     icon: 'skip-previous-outline'
                     pos_hint: {'center_x': .5, 'center_y': .5}
                     on_release: root.dispatch_command({'cmd': 'skip-previous', 'args': None, 'instance': self})
+
                 MDIconButton:
+                    id: play_button
                     icon: 'play-circle'
                     icon_size: '32sp'
                     pos_hint: {'center_x': .5, 'center_y': .5}

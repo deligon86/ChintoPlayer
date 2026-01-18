@@ -31,9 +31,9 @@ class PlayerBarViewModel:
         """
         match mode.lower():
             case "previous":
-                pass
+                self._context.get('queue').next()
             case "next":
-                pass
+                self._context.get('queue').previous()
 
     def play(self):
         """

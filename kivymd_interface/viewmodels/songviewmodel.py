@@ -65,5 +65,5 @@ class SongViewModel:
         # Create a playback queue container
         track = self._context.get('library').get_song_by_id(song_id)
         container = self._context.get('library').get_queue_manager_context()
-        self._context.get('queue_manager').load_continer(container=container, start_index=container.get_index(track))
+        self._context.get('queue').load_container(container=container, start_index=container.get_index(track))
 

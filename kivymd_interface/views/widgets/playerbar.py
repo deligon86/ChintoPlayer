@@ -46,6 +46,7 @@ class BasePlayerBar(MDCard):
         :param value:
         :return:
         """
+        self._view_model.set_volume(value)
 
 
 class PlayerBarContainer(MDBoxLayout):
@@ -107,6 +108,7 @@ class DefaultPlayerBar(BasePlayerBar):
         """
         self.ids.song_name.text = track.title
         self.ids.artist_name.text = track.artist
+        self.ids.play_button.icon = "pause-circle"
 
     @mainthread
     def on_duration(self, duration):

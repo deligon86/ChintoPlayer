@@ -299,6 +299,17 @@ class CoreEngine:
             self.shutdown()
 
     def set_volume(self, volume, channel: CoreAudioChannel|int=None):
+        """
+        Set volume in range 1 - 120 max
+        :param volume:
+        :param channel:
+        :return:
+        """
+        if volume > 120:
+            volume = 120
+
+        volume /= 120
+
         self._volume = volume
         if self.mixer:
             self.mixer.set_volume(volume, channel)
@@ -308,8 +319,8 @@ class CoreEngine:
 
     def _set_end_event(self, val):
         self._end_event = val
-        if self.end_event_handler:
-            self.end_event_handler(self._map_event(val))
+        #if self.end_event_handler:
+        #    self.end_event_handler(True self._map_event(val) != "play" else False)
 
     def _map_event(self, event):
         return self._event_maps.get(event)

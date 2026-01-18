@@ -36,7 +36,7 @@ class AudioEngineService:
         self.bus.subscribe(PlaybackCommandEvent.PLAYBACK_RESUME, lambda _: self.__engine.resume())
         self.bus.subscribe(PlaybackCommandEvent.PLAYBACK_STOP, lambda _: self.__engine.stop())
         self.bus.subscribe(PlaybackEngineEvent.KILL, self.receive_engine_termination)
-
+        self.bus.subscribe(PlaybackEngineEvent.PLAYBACK_ENGINE_VOLUME, self.__engine.set_volume)
     @property
     def state(self):
         return AudioServiceState.ACTIVE if self.__engine.is_playing() else AudioServiceState.DORMANT
@@ -61,7 +61,8 @@ class AudioEngineService:
         :param event:
         :return:
         """
-        self.bus.publish(PlaybackEngineEvent.PLAYBACK_COMPLETED, self._current_track)
+        if event:
+            self.bus.publish(PlaybackEngineEvent.PLAYBACK_COMPLETED, self._current_track)
 
     def handle_playback_events(self, event:str):
         """

@@ -249,3 +249,4 @@ class QueueManager:
             item.is_current = (i == self._current_index)
         self._bus.publish(PlaybackCommandEvent.PLAYBACK_REQUEST,
                           self._active_container.items[self._current_index].track)
+        print("[Queue] Emitted")
